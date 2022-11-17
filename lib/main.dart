@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend_jshy/mainpage.dart';
+import 'package:frontend_jshy/resultpage.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,9 +13,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       home: Scaffold(
           appBar: AppBar(
-            backgroundColor: Color(0xff7FB77E),
+            backgroundColor: const Color(0xff7FB77E),
           ),
-          body: const MainPage()
+          body: const ResultPage()
       ),
     );
   }
