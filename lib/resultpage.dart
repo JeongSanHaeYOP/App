@@ -22,15 +22,21 @@ final List<String> imgList = [
   'assets/images/img3.png'
 ];
 
-final Map resultMap = {
-  "GS25 위더뷰중앙" : 4000,
-  "주식회사 써브원" : 8400,
-  "이지윤" : 150000,
-  "주식회사 우아한형제" : 15900,
-  "임세희" : 2500,
-  "임세희" : 15000,
-  "주식회사 카카오" : 3510
-};
+
+/// MAP 아닌 리스트로 따로 할당해주어야할듯?..
+/// 중복이 있을 수 있기 때문에..
+/// -> 해결
+///
+/// OCR 결과 전달해줄때, 따로따로 주어야할듯.. ***
+
+
+final List<String> itemList = [
+  "GS25 위더뷰중앙", "주식회사 써브원", "이지윤", "주식회사 우아한형제", "임세희", "임세희", "주식회사 카카오"
+];
+
+final List<int> priceList = [
+  4000, 8400, 150000, 15900, 2500, 15000, 3510
+];
 
 int? sumValues(List price) {
   int? sum = 0;
@@ -115,14 +121,14 @@ Widget priceListView(BuildContext context) {
             Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                for(int i = 0; i < resultMap.length; i++)
+                for(int i = 0; i < itemList.length; i++)
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(resultMap.keys.toList()[i]),
+                      Text(itemList[i]),
                       Row(
                         children: [
-                          Text(resultMap.values.toList()[i].toString()),
+                          Text(priceList[i].toString()),
                           const Checkbox(value: true, onChanged: null)
                         ],
                       )
@@ -165,7 +171,7 @@ Widget resultTextView(BuildContext context) {
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   Text(
-                      sumValues(resultMap.values.toList()).toString(),
+                      sumValues(priceList).toString(),
                       style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                 ],
