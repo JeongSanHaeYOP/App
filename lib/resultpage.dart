@@ -47,110 +47,132 @@ class _ResultPageState extends State<ResultPage> {
     return Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          SizedBox(
-            // 이미지가 들어간 박스
-            height: 450,
-            child: Padding(
-                padding: const EdgeInsets.fromLTRB(10, 30, 10, 0),
-              child: Swiper(
-                control: const SwiperControl(color: Color(0xff7FB77E)),
-                pagination: const SwiperPagination(
-                  alignment: Alignment.bottomCenter,
-                  builder: DotSwiperPaginationBuilder(
-                      color: Colors.grey, activeColor: Color(0xff7FB77E)),
-                ),
-                itemCount: imgList.length,
-                itemBuilder: (BuildContext context, int index){
-                    return Image.asset(imgList[index], fit: BoxFit.fitHeight);
-                },
-              ),
-            ),
-          ),
-          // 텍스트가 들어간 박스
-          Container(
-              margin: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-              padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-              decoration: const BoxDecoration(
-                  border: Border(
-                      top: BorderSide(
-                          color: Color(0xff7FB77E),
-                          width: 3
-                      ))
-              ),
-              width: 300,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  for(int i = 0; i < 3; i++)
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(resultMap.keys.toList()[i]),
-                        Row(
-                          children: [
-                            Text(resultMap.values.toList()[i].toString()),
-                            const Checkbox(value: true, onChanged: null)
-                          ],
-                        )
-                      ],
-                    ),
-                ],)
-          ),
-          Container(
-              margin: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-              decoration: const BoxDecoration(
-                  border: Border(
-                      top: BorderSide(
-                          color: Color(0xff7FB77E),
-                          width: 3
-                      ))
-              ),
-              width: 300,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Container(
-                      margin: EdgeInsets.fromLTRB(30, 30, 30, 0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text("총액 : "),
-                          Text(sumValues(resultMap.values.toList()).toString()),
-                        ],
-                      )
-                  )
-                ],)
-          )
+          // 캡쳐 이미지가 들어간 박스
+          imageBox(context),
+          // 가격 텍스트가 들어간 박스
+          priceListView(context),
+          // 결과 값이 들어간 박스 (총액)
+          resultTextView(context),
         ],
       );
   }
 }
 
-Widget priceListView(BuildContext context) {
-  return ListView(
-    children: ListTile.divideTiles(
-      context: context,
-      tiles: [
-        Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            for(int i = 0; i < 3; i++)
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(resultMap.keys.toList()[i]),
-                  Row(
-                    children: [
-                      Text(resultMap.values.toList()[i].toString()),
-                      const Checkbox(value: true, onChanged: null)
-                    ],
-                  )
-                ],
-              ),
-          ],)
-      ],
-    ).toList(),
+/// *
+///  캡쳐 이미지 박스
+///  1. Swiper 기능으로 사진 여러장 띄우기 ( OCR에서 여러장 인식하는 거 구현 )
+///  2. 받아온 사진 그대로기나타내기
+///  imgList -> 사진이 들어간 리스트
+/// *
+Widget imageBox(BuildContext context) {
+  return SizedBox(
+    // 이미지가 들어간 박스
+    height: 450,
+    child: Padding(
+      padding: const EdgeInsets.fromLTRB(10, 30, 10, 0),
+      child: Swiper(
+        control: const SwiperControl(color: Color(0xff7FB77E)),
+        pagination: const SwiperPagination(
+          alignment: Alignment.bottomCenter,
+          builder: DotSwiperPaginationBuilder(
+              color: Colors.grey, activeColor: Color(0xff7FB77E)),
+        ),
+        itemCount: imgList.length,
+        itemBuilder: (BuildContext context, int index){
+          return Image.asset(imgList[index], fit: BoxFit.fitHeight);
+        },
+      ),
+    ),
   );
 }
 
+/// *
+/// [ 내역 : 금액 : 체크박스 ] 형태의 값 ListView
+/// 1. 위에 구분 선
+/// resultMap -> {"내역": 금액}
+/// *
+
+Widget priceListView(BuildContext context) {
+  return Container(
+    margin: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+    padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+    decoration: const BoxDecoration(
+        border: Border(
+        top: BorderSide(
+        color: Color(0xff7FB77E),
+        width: 3
+        ))
+    ),
+    width: 300,
+    height: 180,
+    child: Scrollbar(
+      thickness: 4.0, // 스크롤 너비
+      radius: const Radius.circular(8.0), // 스크롤 라운딩
+      child: ListView(
+        children: ListTile.divideTiles(
+          context: context,
+          tiles: [
+            Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                for(int i = 0; i < resultMap.length; i++)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(resultMap.keys.toList()[i]),
+                      Row(
+                        children: [
+                          Text(resultMap.values.toList()[i].toString()),
+                          const Checkbox(value: true, onChanged: null)
+                        ],
+                      )
+                    ],
+                  ),
+              ],
+            )
+          ],
+        ).toList(),
+      ),
+    ),
+  );
+}
+
+/// *
+/// 총액을 알려주는 text box
+/// 1/N 해주는 화면으로 넘어가는 버튼 추가 해야함!!
+/// *
+Widget resultTextView(BuildContext context) {
+  return Container(
+      margin: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+      decoration: const BoxDecoration(
+          border: Border(
+              top: BorderSide(
+                  color: Color(0xff7FB77E),
+                  width: 3
+              ))
+      ),
+      width: 300,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Container(
+              margin: const EdgeInsets.fromLTRB(30, 10, 30, 0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    "총액 : ",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                      sumValues(resultMap.values.toList()).toString(),
+                      style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              )
+          )
+        ],
+      )
+  );
+}
 
