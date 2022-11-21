@@ -12,10 +12,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-          appBar: AppBar(
-            backgroundColor: const Color(0xff7FB77E),
-          ),
-          body: const ResultPage()
+          // appBar: AppBar(
+          //   backgroundColor: const Color(0xff7FB77E),
+          // ),
+          body: Container(
+              margin: EdgeInsets.fromLTRB(0, 30, 0, 0),
+              child: const ResultPage()
+          )
       ),
     );
   }

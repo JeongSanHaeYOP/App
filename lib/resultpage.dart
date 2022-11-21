@@ -6,6 +6,9 @@ import 'package:flutter_swiper/flutter_swiper.dart';
 /// 1. 디자인
 /// 2. OCR 결과 - 체크박스 형태
 /// 3. 체크박스 클릭 되면 결과 박스에 덧셈
+///
+///
+/// 모두 선택 기능 추가??
 
 class ResultPage extends StatefulWidget {
   const ResultPage({Key? key}) : super(key: key);
@@ -15,19 +18,11 @@ class ResultPage extends StatefulWidget {
 }
 
 
-
 final List<String> imgList = [
   'assets/images/img1.png',
   'assets/images/img2.png',
   'assets/images/img3.png'
 ];
-
-
-/// MAP 아닌 리스트로 따로 할당해주어야할듯?..
-/// 중복이 있을 수 있기 때문에..
-/// -> 해결
-///
-/// OCR 결과 전달해줄때, 따로따로 주어야할듯.. ***
 
 class _ResultPageState extends State<ResultPage> {
   @override
@@ -37,11 +32,8 @@ class _ResultPageState extends State<ResultPage> {
         children: [
           // 캡쳐 이미지가 들어간 박스
           imageBox(context),
-          // 가격 텍스트가 들어간 박스
-          // const PriceListView(),
-          // // 결과 값이 들어간 박스 (총액)
-          // resultTextView(context),
-          CalculatePrice()
+          // 가격 텍스트와 총액이 들어간 박스
+          const CalculatePrice()
         ],
       );
   }
@@ -87,6 +79,11 @@ Widget imageBox(BuildContext context) {
 /// *
 ///
 
+/// MAP 아닌 리스트로 따로 할당해주어야할듯?..
+/// 중복이 있을 수 있기 때문에..
+/// -> 해결
+///
+/// OCR 결과 전달해줄때, 따로따로 주어야할듯.. ***
 
 final List<String> itemList = [
   "GS25 위더뷰중앙", "주식회사 써브원", "이지윤", "주식회사 우아한형제", "임세희", "임세희", "주식회사 카카오"
@@ -96,9 +93,9 @@ final List<int> priceList = [
   4000, 8400, 150000, 15900, 2500, 15000, 3510
 ];
 
-final List<bool> checkList = [
-  false, false, false, false, false, false, false
-];
+// final List<bool> checkList = [
+//   false, false, false, false, false, false, false
+// ];
 
 class CalculatePrice extends StatefulWidget {
   const CalculatePrice({Key? key}) : super(key: key);
@@ -109,6 +106,8 @@ class CalculatePrice extends StatefulWidget {
 
 class _CalculatePriceState extends State<CalculatePrice> {
   int sum = 0;
+  var checkList = List<bool>.filled(itemList.length, false, growable: true);
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -129,7 +128,7 @@ class _CalculatePriceState extends State<CalculatePrice> {
               )
           ),
           width: 350,
-          height: 180,
+          height: 200,
           child: Scrollbar(
             thickness: 4.0, // 스크롤 너비
             isAlwaysShown: true,
