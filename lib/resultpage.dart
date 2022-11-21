@@ -29,24 +29,6 @@ final List<String> imgList = [
 ///
 /// OCR 결과 전달해줄때, 따로따로 주어야할듯.. ***
 
-
-final List<String> itemList = [
-  "GS25 위더뷰중앙", "주식회사 써브원", "이지윤", "주식회사 우아한형제", "임세희", "임세희", "주식회사 카카오"
-];
-
-final List<int> priceList = [
-  4000, 8400, 150000, 15900, 2500, 15000, 3510
-];
-
-int? sumValues(List price) {
-  int? sum = 0;
-  for(int i = 0; i < price.length; i ++) {
-    sum = (sum! + price[i]) as int?;
-  }
-
-  return sum;
-}
-
 class _ResultPageState extends State<ResultPage> {
   @override
   Widget build(BuildContext context) {
@@ -56,9 +38,10 @@ class _ResultPageState extends State<ResultPage> {
           // 캡쳐 이미지가 들어간 박스
           imageBox(context),
           // 가격 텍스트가 들어간 박스
-          priceListView(context),
-          // 결과 값이 들어간 박스 (총액)
-          resultTextView(context),
+          // const PriceListView(),
+          // // 결과 값이 들어간 박스 (총액)
+          // resultTextView(context),
+          CalculatePrice()
         ],
       );
   }
@@ -70,6 +53,7 @@ class _ResultPageState extends State<ResultPage> {
 ///  2. 받아온 사진 그대로기나타내기
 ///  imgList -> 사진이 들어간 리스트
 /// *
+///
 Widget imageBox(BuildContext context) {
   return SizedBox(
     // 이미지가 들어간 박스
@@ -95,90 +79,137 @@ Widget imageBox(BuildContext context) {
 /// *
 /// [ 내역 : 금액 : 체크박스 ] 형태의 값 ListView
 /// 1. 위에 구분 선
-/// resultMap -> {"내역": 금액}
-/// *
-
-Widget priceListView(BuildContext context) {
-  return Container(
-    margin: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-    padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-    decoration: const BoxDecoration(
-        border: Border(
-        top: BorderSide(
-        color: Color(0xff7FB77E),
-        width: 3
-        ))
-    ),
-    width: 300,
-    height: 180,
-    child: Scrollbar(
-      thickness: 4.0, // 스크롤 너비
-      radius: const Radius.circular(8.0), // 스크롤 라운딩
-      child: ListView(
-        children: ListTile.divideTiles(
-          context: context,
-          tiles: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                for(int i = 0; i < itemList.length; i++)
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(itemList[i]),
-                      Row(
-                        children: [
-                          Text(priceList[i].toString()),
-                          const Checkbox(value: true, onChanged: null)
-                        ],
-                      )
-                    ],
-                  ),
-              ],
-            )
-          ],
-        ).toList(),
-      ),
-    ),
-  );
-}
-
-/// *
+/// itemList -> 내역
+/// priceList -> 금액
+///
 /// 총액을 알려주는 text box
 /// 1/N 해주는 화면으로 넘어가는 버튼 추가 해야함!!
 /// *
-Widget resultTextView(BuildContext context) {
-  return Container(
-      margin: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-      decoration: const BoxDecoration(
-          border: Border(
-              top: BorderSide(
-                  color: Color(0xff7FB77E),
-                  width: 3
-              ))
-      ),
-      width: 300,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Container(
-              margin: const EdgeInsets.fromLTRB(30, 10, 30, 0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    "총액 : ",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                  Text(
-                      sumValues(priceList).toString(),
-                      style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                ],
-              )
-          )
-        ],
-      )
-  );
+///
+
+
+final List<String> itemList = [
+  "GS25 위더뷰중앙", "주식회사 써브원", "이지윤", "주식회사 우아한형제", "임세희", "임세희", "주식회사 카카오"
+];
+
+final List<int> priceList = [
+  4000, 8400, 150000, 15900, 2500, 15000, 3510
+];
+
+final List<bool> checkList = [
+  false, false, false, false, false, false, false
+];
+
+class CalculatePrice extends StatefulWidget {
+  const CalculatePrice({Key? key}) : super(key: key);
+
+  @override
+  State<CalculatePrice> createState() => _CalculatePriceState();
 }
+
+class _CalculatePriceState extends State<CalculatePrice> {
+  int sum = 0;
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Container(
+          margin: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+          padding: const EdgeInsets.fromLTRB(0, 10, 0, 5),
+          decoration: const BoxDecoration(
+              border: Border(
+                  top: BorderSide(
+                      color: Color(0xff7FB77E),
+                      width: 3
+                  ),
+                  bottom: BorderSide(
+                      color: Color(0xff7FB77E),
+                      width: 3
+                  )
+              )
+          ),
+          width: 350,
+          height: 180,
+          child: Scrollbar(
+            thickness: 4.0, // 스크롤 너비
+            isAlwaysShown: true,
+            radius: const Radius.circular(8.0), // 스크롤 라운딩
+            child: ListView(
+              padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
+              children: ListTile.divideTiles(
+                context: context,
+                tiles: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      for(int i = 0; i < itemList.length; i++)
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(itemList[i]),
+                            Row(
+                              children: [
+                                Text(priceList[i].toString()),
+                                Checkbox(value: checkList[i], onChanged: (value) => {
+                                  setState(() {
+                                    checkList[i] = value!;
+                                    if(value == true) {
+                                      sum = sum + priceList[i];
+                                    } else {
+                                      sum = sum - priceList[i];
+                                    }
+                                  })
+                                })
+                              ],
+                            )
+                          ],
+                        ),
+                    ],
+                  )
+                ],
+              ).toList(),
+            ),
+          ),
+        ),
+        Container(
+            margin: const EdgeInsets.fromLTRB(30, 10, 30, 0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  "총액 : ",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  sum.toString(),
+                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                ElevatedButton(
+                    onPressed: () {},
+                    style: ButtonStyle(
+                      foregroundColor: const MaterialStatePropertyAll(Colors.white),
+                      backgroundColor: MaterialStateProperty.resolveWith(
+                            (states) {
+                          if (states.contains(MaterialState.disabled)) {
+                            return const Color(0xffB1D7B4);
+                          } else {
+                            return const Color(0xff7FB77E);
+                          }
+                        },
+                      ),
+                      shape: MaterialStateProperty.all(
+                          RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20.0)
+                          )
+                      ),
+                    ),
+                    child: const Text("1/N"))
+              ],
+            )
+        )
+      ],
+    );
+  }
+}
+
 
