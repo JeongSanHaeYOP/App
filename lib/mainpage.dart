@@ -41,7 +41,7 @@ class _MainPageState extends State<MainPage> {
                 child: Column(
                     children: <Widget> [
                       Container(
-                        margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
+                        margin: const EdgeInsets.fromLTRB(0, 0, 0, 10),
                         child: const Text("정산할 금액이 들어간",
                             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
                       ),
