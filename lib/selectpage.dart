@@ -10,11 +10,11 @@ import 'package:flutter_swiper/flutter_swiper.dart';
 ///
 /// 모두 선택 기능 추가??
 
-class ResultPage extends StatefulWidget {
-  const ResultPage({Key? key}) : super(key: key);
+class SelectPage extends StatefulWidget {
+  const SelectPage({Key? key}) : super(key: key);
 
   @override
-  State<ResultPage> createState() => _ResultPageState();
+  State<SelectPage> createState() => _SelectPageState();
 }
 
 
@@ -24,7 +24,7 @@ final List<String> imgList = [
   'assets/images/img3.png'
 ];
 
-class _ResultPageState extends State<ResultPage> {
+class _SelectPageState extends State<SelectPage> {
   @override
   Widget build(BuildContext context) {
     return Column(

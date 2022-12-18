@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend_jshy/mainpage.dart';
-import 'package:frontend_jshy/resultpage.dart';
+import 'package:frontend_jshy/selectpage.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,8 +16,8 @@ class MyApp extends StatelessWidget {
           //   backgroundColor: const Color(0xff7FB77E),
           // ),
           body: Container(
-              margin: EdgeInsets.fromLTRB(0, 30, 0, 0),
-              child: const ResultPage()
+              margin: const EdgeInsets.fromLTRB(0, 30, 0, 0),
+              child: const SelectPage()
           )
       ),
     );
