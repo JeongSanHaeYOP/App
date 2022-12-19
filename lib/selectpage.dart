@@ -3,7 +3,8 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
-import 'package:image_cropper_platform_interface/src/models/cropped_file/unsupported.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
 
 /// 결과 페이지: OCR 결과 화면
 /// 1. 디자인
@@ -16,6 +17,7 @@ import 'package:image_cropper_platform_interface/src/models/cropped_file/unsuppo
 // 'assets/images/img2.png',
 // 'assets/images/img3.png'
 List<File> imgList = [];
+List<File> _imgList = [];
 
 class SelectPage extends StatefulWidget {
   final File data;
@@ -30,6 +32,7 @@ class _SelectPageState extends State<SelectPage> {
     // var a = widget.data.path.toString().split('/');
     // print(a.last);
     imgList.add(widget.data);
+    _imgList = imgList;
     print(imgList);
     // return Column(
     //     mainAxisAlignment: MainAxisAlignment.start,
@@ -56,6 +59,7 @@ class _SelectPageState extends State<SelectPage> {
                         children: [
                           // 캡쳐 이미지가 들어간 박스
                           imageBox(context),
+                          // TextButton(onPressed: () {}, child: Text("이미지 추가")),
                           // 가격 텍스트와 총액이 들어간 박스
                           const CalculatePrice()
                         ],
@@ -118,9 +122,9 @@ Widget imageBox(BuildContext context) {
           builder: DotSwiperPaginationBuilder(
               color: Colors.grey, activeColor: Color(0xff7FB77E)),
         ),
-        itemCount: imgList.length,
+        itemCount: _imgList.length,
         itemBuilder: (BuildContext context, int index){
-          return Image.file(imgList[index], fit: BoxFit.fitHeight);
+          return Image.file(_imgList[index], fit: BoxFit.fitHeight);
         },
       ),
     ),
@@ -236,11 +240,11 @@ class _CalculatePriceState extends State<CalculatePrice> {
               children: [
                 const Text(
                   "총액 : ",
-                  style: TextStyle(fontSize: 20),
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 Text(
                   sum.toString(),
-                  style: const TextStyle(fontSize: 20),
+                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 ElevatedButton(
                     onPressed: () {},
@@ -269,5 +273,9 @@ class _CalculatePriceState extends State<CalculatePrice> {
     );
   }
 }
+
+
+
+
 
 

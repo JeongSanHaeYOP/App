@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend_jshy/selectpage.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:multi_image_picker/multi_image_picker.dart';
 // import 'package:multi_crop_picker/picker.dart';
 // import 'package:multi_image_crop/multi_image_crop.dart';
 import 'dart:io';
