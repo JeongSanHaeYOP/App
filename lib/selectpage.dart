@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:image_cropper_platform_interface/src/models/cropped_file/unsupported.dart';
 
 /// 결과 페이지: OCR 결과 화면
 /// 1. 디자인
@@ -9,33 +12,89 @@ import 'package:flutter_swiper/flutter_swiper.dart';
 ///
 ///
 /// 모두 선택 기능 추가??
+// 'assets/images/img1.png',
+// 'assets/images/img2.png',
+// 'assets/images/img3.png'
+List<File> imgList = [];
 
 class SelectPage extends StatefulWidget {
-  const SelectPage({Key? key}) : super(key: key);
-
+  final File data;
+  const SelectPage(this.data, {Key? key}) : super(key: key);
   @override
   State<SelectPage> createState() => _SelectPageState();
 }
 
-
-final List<String> imgList = [
-  'assets/images/img1.png',
-  'assets/images/img2.png',
-  'assets/images/img3.png'
-];
-
 class _SelectPageState extends State<SelectPage> {
   @override
   Widget build(BuildContext context) {
-    return Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          // 캡쳐 이미지가 들어간 박스
-          imageBox(context),
-          // 가격 텍스트와 총액이 들어간 박스
-          const CalculatePrice()
-        ],
-      );
+    // var a = widget.data.path.toString().split('/');
+    // print(a.last);
+    imgList.add(widget.data);
+    print(imgList);
+    // return Column(
+    //     mainAxisAlignment: MainAxisAlignment.start,
+    //     children: [
+    //       // 캡쳐 이미지가 들어간 박스
+    //       imageBox(context),
+    //       // 가격 텍스트와 총액이 들어간 박스
+    //       const CalculatePrice()
+    //     ],
+    //   );
+    return WillPopScope(
+        onWillPop: () {
+          return _onBackKey();
+          },
+        child: MaterialApp(
+          home: Scaffold(
+              // appBar: AppBar(
+              //   backgroundColor: const Color(0xff7FB77E),
+              // ),
+                body: Container(
+                    margin: const EdgeInsets.fromLTRB(0, 30, 0, 0),
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          // 캡쳐 이미지가 들어간 박스
+                          imageBox(context),
+                          // 가격 텍스트와 총액이 들어간 박스
+                          const CalculatePrice()
+                        ],
+                      ),
+                )
+            ),
+          )
+    );
+  }
+
+  Future<bool> _onBackKey() async {
+    return await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            backgroundColor: Colors.white,
+            title: const Text(
+              '지금 돌아가면 현재 내용이 삭제 됩니다. ',
+              style: TextStyle(color: Colors.black, fontSize: 15),
+            ),
+            actions: [
+              TextButton(onPressed: () {
+                imgList = [];
+                Navigator.pop(context, true);
+              },
+                  child: const Text(
+                      "돌아가기"
+                  )
+              ),
+              TextButton(onPressed: () {
+                Navigator.pop(context, false);
+              },
+                  child: const Text(
+                      "취소"
+                  )
+              ),
+            ],
+          );
+        });
   }
 }
 
@@ -61,7 +120,7 @@ Widget imageBox(BuildContext context) {
         ),
         itemCount: imgList.length,
         itemBuilder: (BuildContext context, int index){
-          return Image.asset(imgList[index], fit: BoxFit.fitHeight);
+          return Image.file(imgList[index], fit: BoxFit.fitHeight);
         },
       ),
     ),
@@ -177,11 +236,11 @@ class _CalculatePriceState extends State<CalculatePrice> {
               children: [
                 const Text(
                   "총액 : ",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 20),
                 ),
                 Text(
                   sum.toString(),
-                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  style: const TextStyle(fontSize: 20),
                 ),
                 ElevatedButton(
                     onPressed: () {},
@@ -190,9 +249,9 @@ class _CalculatePriceState extends State<CalculatePrice> {
                       backgroundColor: MaterialStateProperty.resolveWith(
                             (states) {
                           if (states.contains(MaterialState.disabled)) {
-                            return const Color(0xffB1D7B4);
+                            return const Color(0xffB1D7B4); // 연한 초록
                           } else {
-                            return const Color(0xff7FB77E);
+                            return const Color(0xff7FB77E); // 진한 초록
                           }
                         },
                       ),
@@ -205,7 +264,7 @@ class _CalculatePriceState extends State<CalculatePrice> {
                     child: const Text("1/N"))
               ],
             )
-        )
+        ),
       ],
     );
   }

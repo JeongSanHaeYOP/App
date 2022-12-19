@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
           // ),
           body: Container(
               margin: const EdgeInsets.fromLTRB(0, 30, 0, 0),
-              child: const SelectPage()
+              child: const MainPage()
           )
       ),
     );
