@@ -17,10 +17,10 @@ import 'package:image_picker/image_picker.dart';
 // 'assets/images/img2.png',
 // 'assets/images/img3.png'
 List<File> imgList = [];
-List<File> _imgList = [];
 
 class SelectPage extends StatefulWidget {
   final File data;
+  // final List<File> data;
   const SelectPage(this.data, {Key? key}) : super(key: key);
   @override
   State<SelectPage> createState() => _SelectPageState();
@@ -31,8 +31,8 @@ class _SelectPageState extends State<SelectPage> {
   Widget build(BuildContext context) {
     // var a = widget.data.path.toString().split('/');
     // print(a.last);
+    // imgList = widget.data;
     imgList.add(widget.data);
-    _imgList = imgList;
     print(imgList);
     // return Column(
     //     mainAxisAlignment: MainAxisAlignment.start,
@@ -122,9 +122,9 @@ Widget imageBox(BuildContext context) {
           builder: DotSwiperPaginationBuilder(
               color: Colors.grey, activeColor: Color(0xff7FB77E)),
         ),
-        itemCount: _imgList.length,
+        itemCount: imgList.length,
         itemBuilder: (BuildContext context, int index){
-          return Image.file(_imgList[index], fit: BoxFit.fitHeight);
+          return Image.file(imgList[index], fit: BoxFit.fitHeight);
         },
       ),
     ),
