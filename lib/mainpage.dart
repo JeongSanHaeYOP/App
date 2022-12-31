@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend_jshy/selectpage.dart';
+import 'package:frontend_jshy/theme/colors.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:multi_image_crop/multi_image_crop.dart';
@@ -13,6 +14,8 @@ import 'dart:io';
 import 'dart:async';
 
 import 'package:path_provider/path_provider.dart';
+
+import 'inputpage.dart';
 
 /// 메인페이지: 사진 업로드 화면
 /// 1. 디자인
@@ -43,71 +46,71 @@ class _MainPageState extends State<MainPage> {
     );
   }
 
-  XFile? _image;
-  CroppedFile? _croppedImage;
-  Future getImage() async {
-    // for gallery
-    var image = await ImagePicker().pickImage(source: ImageSource.gallery);
-    setState(() {
-      _image = image!;
-    });
-    if(_image != null) {
-      cropImage();
-    }
-  }
-
-  Future<void> cropImage() async {
-    if (_image != null) {
-      var croppedImage = await ImageCropper().cropImage(
-        sourcePath: _image!.path,
-        compressFormat: ImageCompressFormat.jpg,
-        compressQuality: 100,
-        uiSettings: [
-          AndroidUiSettings(
-            toolbarTitle: '',
-            toolbarColor: const Color(0xff7FB77E),
-            toolbarWidgetColor: Colors.white,
-            initAspectRatio: CropAspectRatioPreset.original,
-            lockAspectRatio: false),
-          IOSUiSettings(
-            title: '',
-          ),],
-      );
-      if (croppedImage != null) {
-        setState(() {
-          _croppedImage = croppedImage;
-        });
-      }
-      final File imageFile = File(croppedImage!.path);
-
-
-      if(_croppedImage != null) {
-        nextPage(imageFile);
-      }
-    }
-  }
-
-  // List<XFile>? pickedFiles = [];
-  // List<File> croppedFiles = [];
-  // final ImagePicker _picker = ImagePicker();
-  //
-  // void getImages() async {
-  //   pickedFiles = await _picker.pickMultiImage();
-  //   MultiImageCrop.startCropping(
-  //       context: context,
-  //       aspectRatio: 0.5,
-  //       activeColor: const Color(0xff7FB77E),
-  //       pixelRatio: 2,
-  //       files: List.generate(
-  //           pickedFiles!.length, (index) => File(pickedFiles![index].path)),
-  //       callBack: (List<File> images) {
-  //         setState(() {
-  //           croppedFiles = images;
-  //         });
-  //
-  //         nextPage(croppedFiles);
-  //       });
+  // XFile? _image;
+  // CroppedFile? _croppedImage;
+  // Future getImage() async {
+  //   // for gallery
+  //   var image = await ImagePicker().pickImage(source: ImageSource.gallery);
+  //   setState(() {
+  //     _image = image!;
+  //   });
+  //   if(_image != null) {
+  //     cropImage();
+  //   }
   // }
+  //
+  // Future<void> cropImage() async {
+  //   if (_image != null) {
+  //     var croppedImage = await ImageCropper().cropImage(
+  //       sourcePath: _image!.path,
+  //       compressFormat: ImageCompressFormat.jpg,
+  //       compressQuality: 100,
+  //       uiSettings: [
+  //         AndroidUiSettings(
+  //           toolbarTitle: '',
+  //           toolbarColor: const Color(0xff7FB77E),
+  //           toolbarWidgetColor: Colors.white,
+  //           initAspectRatio: CropAspectRatioPreset.original,
+  //           lockAspectRatio: false),
+  //         IOSUiSettings(
+  //           title: '',
+  //         ),],
+  //     );
+  //     if (croppedImage != null) {
+  //       setState(() {
+  //         _croppedImage = croppedImage;
+  //       });
+  //     }
+  //     final File imageFile = File(croppedImage!.path);
+  //
+  //
+  //     if(_croppedImage != null) {
+  //       nextPage(imageFile);
+  //     }
+  //   }
+  // }
+
+  List<XFile>? pickedFiles = [];
+  List<File> croppedFiles = [];
+  final ImagePicker _picker = ImagePicker();
+
+  void getImages() async {
+    pickedFiles = await _picker.pickMultiImage();
+    MultiImageCrop.startCropping(
+        context: context,
+        aspectRatio: 0.5,
+        activeColor: ColorStyles.mainGreen,
+        pixelRatio: 2,
+        files: List.generate(
+            pickedFiles!.length, (index) => File(pickedFiles![index].path)),
+        callBack: (List<File> images) {
+          setState(() {
+            croppedFiles = images;
+          });
+
+          nextPage(croppedFiles);
+        });
+  }
 
   void nextPage(images) {
     if(images != null) {
@@ -126,10 +129,10 @@ class _MainPageState extends State<MainPage> {
             width: 100,
             child: RawMaterialButton(
               onPressed: () {
-                getImage();
+                getImages();
               },
               elevation: 2.0,
-              fillColor: const Color(0xff7FB77E),
+              fillColor: ColorStyles.mainGreen,
               padding: const EdgeInsets.all(15.0),
               shape: const CircleBorder(),
               child: const Icon(
@@ -164,9 +167,10 @@ class _MainPageState extends State<MainPage> {
             width: 100,
             child: RawMaterialButton(
               onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const InputPage()));
               },
               elevation: 2.0,
-              fillColor: const Color(0xff7FB77E),
+              fillColor: ColorStyles.mainGreen,
               padding: const EdgeInsets.all(15.0),
               shape: const CircleBorder(),
               child: const Icon(
