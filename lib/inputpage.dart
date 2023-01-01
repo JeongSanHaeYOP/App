@@ -13,6 +13,8 @@ class InputPage extends StatefulWidget {
 class _InputPageState extends State<InputPage> {
   @override
   Widget build(BuildContext context) {
+    _itemList.add("예시");
+    _priceList.add(73);
     return WillPopScope(
         onWillPop: () {
           return _onBackKey();
@@ -37,7 +39,7 @@ class _InputPageState extends State<InputPage> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: const [
                     // 가격 텍스트와 총액이 들어간 박스
-                    CalculatePrice()
+                    Expanded(child: CalculatePrice())
                   ],
                 ),
               )
@@ -96,6 +98,7 @@ class _CalculatePriceState extends State<CalculatePrice> {
   List<String> itemList = _itemList;
   var checkList = List<bool>.filled(_itemList.length, false, growable: true);
 
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -120,7 +123,6 @@ class _CalculatePriceState extends State<CalculatePrice> {
                 )
             ),
             width: 350,
-            height: 550,
             child: itemPriceList(_itemList, _priceList)
         ),
         Container(
@@ -231,7 +233,7 @@ class _CalculatePriceState extends State<CalculatePrice> {
                 keyboardType: TextInputType.number,
                 inputFormatters: [FilteringTextInputFormatter.allow(RegExp('[0-9]'))],
                 decoration: const InputDecoration(
-                    hintText: "가격",
+                    hintText: "금액",
                     focusedBorder: UnderlineInputBorder(
                       borderSide: BorderSide(color: ColorStyles.subGreen, width: 2),
                     ),
@@ -254,7 +256,8 @@ class _CalculatePriceState extends State<CalculatePrice> {
                   item = itemTextController.text;
                 }
                 _itemList.add(item);
-                checkList.add(false);
+                checkList.add(true);
+                sum = sum + int.parse(priceTextController.text);
               });
 
             },

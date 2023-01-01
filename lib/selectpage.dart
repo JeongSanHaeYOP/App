@@ -7,6 +7,7 @@ import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:frontend_jshy/theme/colors.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:multi_image_picker/multi_image_picker.dart';
 
 /// 결과 페이지: OCR 결과 화면
 /// 1. 디자인
@@ -31,8 +32,6 @@ class SelectPage extends StatefulWidget {
 class _SelectPageState extends State<SelectPage> {
   @override
   Widget build(BuildContext context) {
-    // var a = widget.data.path.toString().split('/');
-    // print(a.last);
     imgList = widget.data;
     // imgList.add(widget.data);
     print(imgList);
@@ -63,7 +62,7 @@ class _SelectPageState extends State<SelectPage> {
                           imageBox(context),
                           // TextButton(onPressed: () {}, child: Text("이미지 추가")),
                           // 가격 텍스트와 총액이 들어간 박스
-                          const CalculatePrice()
+                          Expanded(child: CalculatePrice())
                         ],
                       ),
                 )
@@ -194,7 +193,6 @@ class _CalculatePriceState extends State<CalculatePrice> {
               )
           ),
           width: 350,
-          height: 200,
           child: itemPriceList(_itemList, _priceList)
         ),
         Container(
@@ -305,7 +303,7 @@ class _CalculatePriceState extends State<CalculatePrice> {
                 keyboardType: TextInputType.number,
                 inputFormatters: [FilteringTextInputFormatter.allow(RegExp('[0-9]'))],
                 decoration: const InputDecoration(
-                    hintText: "가격",
+                    hintText: "금액",
                     focusedBorder: UnderlineInputBorder(
                       borderSide: BorderSide(color: ColorStyles.subGreen, width: 2),
                     ),
@@ -328,7 +326,8 @@ class _CalculatePriceState extends State<CalculatePrice> {
                   item = itemTextController.text;
                 }
                 _itemList.add(item);
-                checkList.add(false);
+                checkList.add(true);
+                sum = sum + int.parse(priceTextController.text);
               });
 
             },
