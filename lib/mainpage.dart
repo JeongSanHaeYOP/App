@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:frontend_jshy/main.dart';
 import 'package:frontend_jshy/selectpage.dart';
 import 'package:frontend_jshy/theme/colors.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -27,11 +28,13 @@ class MainPage extends StatefulWidget {
 
   @override
   State<MainPage> createState() => _MainPageState();
+
 }
 
 class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
+
     return Center(
       child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -48,17 +51,62 @@ class _MainPageState extends State<MainPage> {
 
   // XFile? _image;
   // CroppedFile? _croppedImage;
-  // Future getImage() async {
-  //   // for gallery
-  //   var image = await ImagePicker().pickImage(source: ImageSource.gallery);
-  //   setState(() {
-  //     _image = image!;
-  //   });
-  //   if(_image != null) {
-  //     cropImage();
-  //   }
-  // }
-  //
+
+  late List<XFile?> _imgList;
+  final List<CroppedFile?> _croppedImgList = [];
+
+
+  Future getImage() async {
+    // Initialized croppedImageList
+    _croppedImgList.clear();
+    // for gallery
+    var imgList = await ImagePicker().pickMultiImage();
+    setState(() {
+      _imgList = imgList!;
+    });
+
+    if(_imgList.isNotEmpty) {
+      cropImage();
+    }
+  }
+  Future<void> cropImage() async {
+    if (_imgList.isNotEmpty) {
+      // 고른 이미지들 각각 크롭 액티비티 돌리기
+      for (int i = 0; i < _imgList.length; i ++) {
+        var croppedImage = await ImageCropper().cropImage(
+          sourcePath: _imgList[i]!.path,
+          compressFormat: ImageCompressFormat.jpg,
+          compressQuality: 100,
+          uiSettings: [
+            AndroidUiSettings(
+                toolbarTitle: '',
+                toolbarColor: ColorStyles.mainGreen,
+                toolbarWidgetColor: Colors.white,
+                initAspectRatio: CropAspectRatioPreset.original,
+                lockAspectRatio: false),
+            IOSUiSettings(
+              title: '',
+            ),
+          ],
+        );
+        if (croppedImage != null) {
+          setState(() {
+            _croppedImgList.add(croppedImage);
+          });
+        }
+      }
+
+      List<File> imageFileList = [];
+      for (int i = 0; i < _croppedImgList.length; i ++) {
+        imageFileList.add(File(_croppedImgList[i]!.path));
+      }
+
+      if(_croppedImgList.isNotEmpty) {
+        nextPage(imageFileList);
+      }
+    }
+  }
+
   // Future<void> cropImage() async {
   //   if (_image != null) {
   //     var croppedImage = await ImageCropper().cropImage(
@@ -85,38 +133,37 @@ class _MainPageState extends State<MainPage> {
   //
   //
   //     if(_croppedImage != null) {
-  //       nextPage(imageFile);
+  //       // nextPage(imageFile);
   //     }
   //   }
   // }
 
-  List<XFile>? pickedFiles = [];
-  List<File> croppedFiles = [];
-  final ImagePicker _picker = ImagePicker();
+  // List<XFile>? pickedFiles = [];
+  // List<File> croppedFiles = [];
+  // final ImagePicker _picker = ImagePicker();
+  //
+  // void getImages() async {
+  //   pickedFiles = await _picker.pickMultiImage();
+  //   MultiImageCrop.startCropping(
+  //       context: context,
+  //       aspectRatio: 0.5,
+  //       activeColor: ColorStyles.mainGreen,
+  //       pixelRatio: 2,
+  //       files: List.generate(
+  //           pickedFiles!.length, (index) => File(pickedFiles![index].path)),
+  //       callBack: (List<File> images) {
+  //         setState(() {
+  //           croppedFiles = images;
+  //         });
+  //         nextPage(croppedFiles);
+  //       });
+  // }
 
-  void getImages() async {
-    pickedFiles = await _picker.pickMultiImage();
-    MultiImageCrop.startCropping(
-        context: context,
-        aspectRatio: 0.5,
-        activeColor: ColorStyles.mainGreen,
-        pixelRatio: 2,
-        files: List.generate(
-            pickedFiles!.length, (index) => File(pickedFiles![index].path)),
-        callBack: (List<File> images) {
-          setState(() {
-            croppedFiles = images;
-          });
-
-          nextPage(croppedFiles);
-        });
-  }
-
-  void nextPage(images) {
-    if(images != null) {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => SelectPage(images)));
-    } else {
+  void nextPage(List<File> images) {
+    if(images.isEmpty) {
       Navigator.push(context, MaterialPageRoute(builder: (context) => const MainPage()));
+    } else {
+      Navigator.push(context, MaterialPageRoute(builder: (context) => SelectPage(images)));
     }
   }
 
@@ -129,7 +176,7 @@ class _MainPageState extends State<MainPage> {
             width: 100,
             child: RawMaterialButton(
               onPressed: () {
-                getImages();
+                getImage();
               },
               elevation: 2.0,
               fillColor: ColorStyles.mainGreen,
