@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:frontend_jshy/main.dart';
 import 'package:frontend_jshy/selectpage.dart';
 import 'package:frontend_jshy/theme/colors.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/route_manager.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:multi_image_crop/multi_image_crop.dart';
@@ -161,9 +163,10 @@ class _MainPageState extends State<MainPage> {
 
   void nextPage(List<File> images) {
     if(images.isEmpty) {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => const MainPage()));
+      Get.to(() => const MainPage());
+      print("------------Empty");
     } else {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => SelectPage(images)));
+      Get.to(() => const SelectPage(), arguments: images);
     }
   }
 
@@ -178,7 +181,7 @@ class _MainPageState extends State<MainPage> {
               onPressed: () {
                 getImage();
               },
-              elevation: 2.0,
+              elevation: 0.0,
               fillColor: ColorStyles.mainGreen,
               padding: const EdgeInsets.all(15.0),
               shape: const CircleBorder(),
@@ -214,9 +217,10 @@ class _MainPageState extends State<MainPage> {
             width: 100,
             child: RawMaterialButton(
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => const InputPage()));
+                Get.to(() => const InputPage());
               },
-              elevation: 2.0,
+              elevation: 0.0,
+              focusElevation: 0.0,
               fillColor: ColorStyles.mainGreen,
               padding: const EdgeInsets.all(15.0),
               shape: const CircleBorder(),

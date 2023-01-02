@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:frontend_jshy/theme/colors.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 
 class InputPage extends StatefulWidget {
   const InputPage({Key? key}) : super(key: key);
@@ -20,6 +22,11 @@ class _InputPageState extends State<InputPage> {
           return _onBackKey();
         },
         child: MaterialApp(
+          theme: Theme.of(context).copyWith(
+            splashColor: Colors.transparent,
+            highlightColor: Colors.transparent,
+            hoverColor: Colors.transparent,
+          ),
           home: Scaffold(
               resizeToAvoidBottomInset : false,
               appBar: AppBar(
@@ -27,11 +34,11 @@ class _InputPageState extends State<InputPage> {
                 leading: IconButton(
                     onPressed: () async {
                       if(await _onBackKey()) {
-                        Navigator.pop(context);
+                        Get.back();
                       }
                     },
                     color: Colors.white,
-                    icon: const Icon(Icons.arrow_back)),
+                    icon: const Icon(Icons.arrow_back_ios_new)),
               ),
               body: Container(
                 margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
@@ -53,28 +60,80 @@ class _InputPageState extends State<InputPage> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
+            titlePadding: const EdgeInsets.fromLTRB(20, 30, 20, 0),
+            actionsPadding: const EdgeInsets.fromLTRB(10, 20, 10, 20),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
             backgroundColor: Colors.white,
             title: const Text(
               '지금 돌아가면 현재 내용이 삭제 됩니다. ',
               style: TextStyle(color: Colors.black, fontSize: 15),
             ),
             actions: [
-              TextButton(onPressed: () {
-                _priceList = [];
-                _itemList = [];
-                Navigator.pop(context, true);
-              },
-                  child: const Text(
-                      "돌아가기"
-                  )
-              ),
-              TextButton(onPressed: () {
-                Navigator.pop(context, false);
-              },
-                  child: const Text(
-                      "취소"
-                  )
-              ),
+              Center(
+                child: Column(
+                  children: [
+                    Container(
+                      width: double.infinity,
+                      margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                      child: ElevatedButton(
+                          onPressed: () {
+                            _priceList = [];
+                            _itemList = [];
+                            Navigator.pop(context, true);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            splashFactory: NoSplash.splashFactory,
+                            backgroundColor: ColorStyles.mainGreen,
+                            shadowColor: Colors.transparent,
+                            alignment: Alignment.center,
+                            disabledBackgroundColor: ColorStyles.subGreen,
+                            // padding: const EdgeInsets.fromLTRB(100, 0, 100, 0),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          child: const Text(
+                            "돌아가기",
+                            style: TextStyle(
+                                color: Colors.white,
+                                letterSpacing: 2,
+                            ),
+                          )
+                      ),
+                    ),
+                   Container(
+                     width: double.infinity,
+                     margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                       child: OutlinedButton(
+                         onPressed: () {
+                           Navigator.pop(context, false);
+                           },
+                         style: OutlinedButton.styleFrom(
+                           splashFactory: NoSplash.splashFactory,
+                           alignment: Alignment.center,
+                           disabledBackgroundColor: ColorStyles.subGreen,
+                           shape: RoundedRectangleBorder(
+                             borderRadius: BorderRadius.circular(10),
+                           ),
+                           side: const BorderSide(
+                             width: 1,
+                             color: Colors.grey,
+                           ),
+                         ),
+                         child: const Text(
+                           "취소",
+                           style: TextStyle(
+                               color: Colors.black,
+                               letterSpacing: 2,
+                           ),
+                         )
+                     ),
+                   )
+                  ],
+                ),
+              )
             ],
           );
         });
@@ -138,26 +197,36 @@ class _CalculatePriceState extends State<CalculatePrice> {
                   sum.toString(),
                   style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
-                ElevatedButton(
-                    onPressed: () {},
-                    style: ButtonStyle(
-                      foregroundColor: const MaterialStatePropertyAll(Colors.white),
-                      backgroundColor: MaterialStateProperty.resolveWith(
-                            (states) {
-                          if (states.contains(MaterialState.disabled)) {
-                            return ColorStyles.subGreen; // 연한 초록
-                          } else {
-                            return ColorStyles.mainGreen; // 진한 초록
-                          }
-                        },
+                Theme(
+                  data: Theme.of(context).copyWith(
+                    splashColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
+                    hoverColor: Colors.transparent,
+                  ),
+                  child: ElevatedButton(
+                      onPressed: () {},
+                      style: ButtonStyle(
+                        foregroundColor: const MaterialStatePropertyAll(Colors.white),
+                        splashFactory: NoSplash.splashFactory,
+                        shadowColor: const MaterialStatePropertyAll(Colors.transparent),
+                        backgroundColor: MaterialStateProperty.resolveWith(
+                              (states) {
+                            if (states.contains(MaterialState.disabled)) {
+                              return ColorStyles.subGreen; // 연한 초록
+                            } else {
+                              return ColorStyles.mainGreen; // 진한 초록
+                            }
+                          },
+                        ),
+                        shape: MaterialStateProperty.all(
+                            RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20.0)
+                            )
+                        ),
                       ),
-                      shape: MaterialStateProperty.all(
-                          RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20.0)
-                          )
-                      ),
-                    ),
-                    child: const Text("1/N"))
+                      child: const Text("1/N")
+                  ),
+                )
               ],
             )
         ),
@@ -182,16 +251,20 @@ class _CalculatePriceState extends State<CalculatePrice> {
                   Text(item[i]),
                   Row(children: [
                     Text(price[i].toString()),
-                    Checkbox(value: checkList[i], onChanged: (value) => {
-                      setState(() {
-                        checkList[i] = value!;
-                        if(value == true) {
-                          sum = sum + price[i];
-                        } else {
-                          sum = sum - price[i];
-                        }
-                      })
-                    })
+                    Checkbox(
+                      activeColor: ColorStyles.mainGreen,
+                      value: checkList[i],
+                        onChanged: (value) => {
+                          setState(() {
+                            checkList[i] = value!;
+                            if(value == true) {
+                              sum = sum + price[i];
+                            } else {
+                              sum = sum - price[i];
+                            }
+                          })
+                        },
+                      )
                   ],)
                 ],
               ),
@@ -225,29 +298,33 @@ class _CalculatePriceState extends State<CalculatePrice> {
             controller: itemTextController,
           ),
         ),
-        Row(
-          children: [
-            SizedBox(
-              width: 100,
-              child: TextField(
-                keyboardType: TextInputType.number,
-                inputFormatters: [FilteringTextInputFormatter.allow(RegExp('[0-9]'))],
-                decoration: const InputDecoration(
-                    hintText: "금액",
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: ColorStyles.subGreen, width: 2),
-                    ),
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: ColorStyles.mainGreen, width: 2),
-                    ),
-                    focusColor: ColorStyles.mainGreen,
-                    contentPadding: EdgeInsets.all(10)
+        SizedBox(
+          width: 100,
+          child: TextField(
+            keyboardType: TextInputType.number,
+            inputFormatters: [FilteringTextInputFormatter.allow(RegExp('[0-9]'))],
+            decoration: const InputDecoration(
+                hintText: "금액",
+                focusedBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: ColorStyles.subGreen, width: 2),
                 ),
-                cursorColor: ColorStyles.mainGreen,
-                controller: priceTextController,
-              ),
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: ColorStyles.mainGreen, width: 2),
+                ),
+                focusColor: ColorStyles.mainGreen,
+                contentPadding: EdgeInsets.all(5)
             ),
-            TextButton(onPressed: () {
+            cursorColor: ColorStyles.mainGreen,
+            controller: priceTextController,
+          ),
+        ),
+        Container(
+          margin: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+          child: TextButton(
+            style: TextButton.styleFrom(
+              splashFactory: NoSplash.splashFactory,
+            ),
+            onPressed: () {
               setState(() {
                 _priceList.add(int.parse(priceTextController.text));
                 if(itemTextController.text == "") {
@@ -259,18 +336,16 @@ class _CalculatePriceState extends State<CalculatePrice> {
                 checkList.add(true);
                 sum = sum + int.parse(priceTextController.text);
               });
-
             },
-              child: const Text(
-                "추가",
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                  color: ColorStyles.mainGreen,
-                ),
+            child: const Text(
+              "추가",
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+                color: ColorStyles.mainGreen,
               ),
             ),
-          ],
+          ),
         ),
       ],
     );

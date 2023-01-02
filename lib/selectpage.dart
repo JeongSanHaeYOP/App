@@ -4,7 +4,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:frontend_jshy/main.dart';
+import 'package:frontend_jshy/mainpage.dart';
 import 'package:frontend_jshy/theme/colors.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/route_manager.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
@@ -22,9 +26,8 @@ import 'package:multi_image_picker/multi_image_picker.dart';
 List<File> imgList = [];
 
 class SelectPage extends StatefulWidget {
-  // final File data;
-  final List<File> data;
-  const SelectPage(this.data, {Key? key}) : super(key: key);
+  const SelectPage({Key? key}) : super(key: key);
+
   @override
   State<SelectPage> createState() => _SelectPageState();
 }
@@ -32,14 +35,18 @@ class SelectPage extends StatefulWidget {
 class _SelectPageState extends State<SelectPage> {
   @override
   Widget build(BuildContext context) {
-    imgList = widget.data;
-    // imgList.add(widget.data);
+    imgList = Get.arguments;
     print(imgList);
     return WillPopScope(
         onWillPop: () {
           return _onBackKey();
           },
         child: MaterialApp(
+          theme: Theme.of(context).copyWith(
+            splashColor: Colors.transparent,
+            highlightColor: Colors.transparent,
+            hoverColor: Colors.transparent,
+          ),
           home: Scaffold(
               resizeToAvoidBottomInset : false,
               appBar: AppBar(
@@ -47,11 +54,11 @@ class _SelectPageState extends State<SelectPage> {
                 leading: IconButton(
                     onPressed: () async {
                       if(await _onBackKey()) {
-                        Navigator.pop(context);
+                        Get.back();
                       }
                     },
                     color: Colors.white,
-                    icon: const Icon(Icons.arrow_back)),
+                    icon: const Icon(Icons.arrow_back_ios_new)),
               ),
                 body: Container(
                     margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
@@ -62,7 +69,7 @@ class _SelectPageState extends State<SelectPage> {
                           imageBox(context),
                           // TextButton(onPressed: () {}, child: Text("이미지 추가")),
                           // 가격 텍스트와 총액이 들어간 박스
-                          Expanded(child: CalculatePrice())
+                          const Expanded(child: CalculatePrice())
                         ],
                       ),
                 )
@@ -76,34 +83,85 @@ class _SelectPageState extends State<SelectPage> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
+            titlePadding: const EdgeInsets.fromLTRB(20, 30, 20, 0),
+            actionsPadding: const EdgeInsets.fromLTRB(10, 20, 10, 20),
             backgroundColor: Colors.white,
             title: const Text(
               '지금 돌아가면 현재 내용이 삭제 됩니다. ',
               style: TextStyle(color: Colors.black, fontSize: 15),
             ),
             actions: [
-              TextButton(onPressed: () {
-                imgList = [];
-                _priceList = [];
-                _itemList = [];
-                Navigator.pop(context, true);
-              },
-                  child: const Text(
-                      "돌아가기"
-                  )
-              ),
-              TextButton(onPressed: () {
-                Navigator.pop(context, false);
-              },
-                  child: const Text(
-                      "취소"
-                  )
-              ),
+              Center(
+                child: Column(
+                  children: [
+                    Container(
+                      width: double.infinity,
+                      margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                      child: ElevatedButton(
+                          onPressed: () {
+                            imgList = [];
+                            _priceList = [];
+                            _itemList = [];
+                            Navigator.pop(context, true);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            splashFactory: NoSplash.splashFactory,
+                            backgroundColor: ColorStyles.mainGreen,
+                            shadowColor: Colors.transparent,
+                            alignment: Alignment.center,
+                            disabledBackgroundColor: ColorStyles.subGreen,
+                            // padding: const EdgeInsets.fromLTRB(100, 0, 100, 0),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          child: const Text(
+                            "돌아가기",
+                            style: TextStyle(
+                              color: Colors.white,
+                              letterSpacing: 2,
+                            ),
+                          )
+                      ),
+                    ),
+                    Container(
+                      width: double.infinity,
+                      margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                      child: OutlinedButton(
+                          onPressed: () {
+                            Navigator.pop(context, false);
+                          },
+                          style: OutlinedButton.styleFrom(
+                            splashFactory: NoSplash.splashFactory,
+                            alignment: Alignment.center,
+                            disabledBackgroundColor: ColorStyles.subGreen,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            side: const BorderSide(
+                              width: 1,
+                              color: Colors.grey,
+                            ),
+                          ),
+                          child: const Text(
+                            "취소",
+                            style: TextStyle(
+                              color: Colors.black,
+                              letterSpacing: 2,
+                            ),
+                          )
+                      ),
+                    )
+                  ],
+                ),
+              )
             ],
           );
         });
   }
 }
+
+
 
 /// *
 ///  캡쳐 이미지 박스
@@ -170,7 +228,6 @@ class _CalculatePriceState extends State<CalculatePrice> {
   List<int> priceList = _priceList;
   List<String> itemList = _itemList;
   var checkList = List<bool>.filled(_itemList.length, false, growable: true);
-  int _count = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -208,26 +265,36 @@ class _CalculatePriceState extends State<CalculatePrice> {
                   sum.toString(),
                   style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
-                ElevatedButton(
-                    onPressed: () {},
-                    style: ButtonStyle(
-                      foregroundColor: const MaterialStatePropertyAll(Colors.white),
-                      backgroundColor: MaterialStateProperty.resolveWith(
-                            (states) {
-                          if (states.contains(MaterialState.disabled)) {
-                            return ColorStyles.subGreen; // 연한 초록
-                          } else {
-                            return ColorStyles.mainGreen; // 진한 초록
-                          }
-                        },
-                      ),
-                      shape: MaterialStateProperty.all(
-                          RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20.0)
-                          )
-                      ),
+                Theme(
+                    data: Theme.of(context).copyWith(
+                      splashColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
+                      hoverColor: Colors.transparent,
                     ),
-                    child: const Text("1/N"))
+                    child: ElevatedButton(
+                        onPressed: () {},
+                        style: ButtonStyle(
+                          splashFactory: NoSplash.splashFactory,
+                          foregroundColor: const MaterialStatePropertyAll(Colors.white),
+                          shadowColor: const MaterialStatePropertyAll(Colors.transparent),
+                          backgroundColor: MaterialStateProperty.resolveWith(
+                                (states) {
+                              if (states.contains(MaterialState.disabled)) {
+                                return ColorStyles.subGreen; // 연한 초록
+                              } else {
+                                return ColorStyles.mainGreen; // 진한 초록
+                              }
+                            },
+                          ),
+                          shape: MaterialStateProperty.all(
+                              RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20.0)
+                              )
+                          ),
+                        ),
+                        child: const Text("1/N")
+                    )
+                )
               ],
             )
         ),
@@ -241,7 +308,7 @@ class _CalculatePriceState extends State<CalculatePrice> {
       isAlwaysShown: true,
       radius: const Radius.circular(8.0), // 스크롤 라운딩
       child: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
+        padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
@@ -252,16 +319,19 @@ class _CalculatePriceState extends State<CalculatePrice> {
                   Text(item[i]),
                   Row(children: [
                     Text(price[i].toString()),
-                    Checkbox(value: checkList[i], onChanged: (value) => {
-                      setState(() {
-                        checkList[i] = value!;
-                        if(value == true) {
-                          sum = sum + price[i];
-                        } else {
-                          sum = sum - price[i];
-                        }
-                      })
-                    })
+                    Checkbox(
+                        activeColor: ColorStyles.mainGreen,
+                        value: checkList[i],
+                        onChanged: (value) => {
+                          setState(() {
+                            checkList[i] = value!;
+                            if(value == true) {
+                              sum = sum + price[i];
+                            } else {
+                              sum = sum - price[i];
+                            }
+                          })
+                        })
                   ],)
                 ],
               ),
@@ -282,7 +352,7 @@ class _CalculatePriceState extends State<CalculatePrice> {
           child: TextField(
             keyboardType: TextInputType.text,
             decoration: const InputDecoration(
-              hintText: "사용처", 
+              hintText: "사용처",
               focusedBorder: UnderlineInputBorder(
                 borderSide: BorderSide(color: ColorStyles.subGreen, width: 2),
               ),
@@ -295,29 +365,33 @@ class _CalculatePriceState extends State<CalculatePrice> {
             controller: itemTextController,
           ),
         ),
-        Row(
-          children: [
-            SizedBox(
-              width: 100,
-              child: TextField(
-                keyboardType: TextInputType.number,
-                inputFormatters: [FilteringTextInputFormatter.allow(RegExp('[0-9]'))],
-                decoration: const InputDecoration(
-                    hintText: "금액",
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: ColorStyles.subGreen, width: 2),
-                    ),
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: ColorStyles.mainGreen, width: 2),
-                    ),
-                    focusColor: ColorStyles.mainGreen,
-                    contentPadding: EdgeInsets.all(10)
+        SizedBox(
+          width: 100,
+          child: TextField(
+            keyboardType: TextInputType.number,
+            inputFormatters: [FilteringTextInputFormatter.allow(RegExp('[0-9]'))],
+            decoration: const InputDecoration(
+                hintText: "금액",
+                focusedBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: ColorStyles.subGreen, width: 2),
                 ),
-                cursorColor: ColorStyles.mainGreen,
-                controller: priceTextController,
-              ),
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: ColorStyles.mainGreen, width: 2),
+                ),
+                focusColor: ColorStyles.mainGreen,
+                contentPadding: EdgeInsets.all(5)
             ),
-            TextButton(onPressed: () {
+            cursorColor: ColorStyles.mainGreen,
+            controller: priceTextController,
+          ),
+        ),
+        Container(
+          margin: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+          child: TextButton(
+            style: TextButton.styleFrom(
+              splashFactory: NoSplash.splashFactory,
+            ),
+            onPressed: () {
               setState(() {
                 _priceList.add(int.parse(priceTextController.text));
                 if(itemTextController.text == "") {
@@ -329,18 +403,16 @@ class _CalculatePriceState extends State<CalculatePrice> {
                 checkList.add(true);
                 sum = sum + int.parse(priceTextController.text);
               });
-
             },
-              child: const Text(
-                "추가",
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                  color: ColorStyles.mainGreen,
-                ),
+            child: const Text(
+              "추가",
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+                color: ColorStyles.mainGreen,
               ),
             ),
-          ],
+          ),
         ),
       ],
     );
