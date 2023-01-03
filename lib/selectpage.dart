@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:frontend_jshy/main.dart';
 import 'package:frontend_jshy/mainpage.dart';
+import 'package:frontend_jshy/resultpage.dart';
 import 'package:frontend_jshy/theme/colors.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/route_manager.dart';
@@ -272,7 +273,9 @@ class _CalculatePriceState extends State<CalculatePrice> {
                       hoverColor: Colors.transparent,
                     ),
                     child: ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Get.to(const ResultPage());
+                        },
                         style: ButtonStyle(
                           splashFactory: NoSplash.splashFactory,
                           foregroundColor: const MaterialStatePropertyAll(Colors.white),

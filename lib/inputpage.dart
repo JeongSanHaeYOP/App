@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:frontend_jshy/resultpage.dart';
 import 'package:frontend_jshy/theme/colors.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -204,7 +205,9 @@ class _CalculatePriceState extends State<CalculatePrice> {
                     hoverColor: Colors.transparent,
                   ),
                   child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Get.to(() => const ResultPage(), arguments: sum);
+                      },
                       style: ButtonStyle(
                         foregroundColor: const MaterialStatePropertyAll(Colors.white),
                         splashFactory: NoSplash.splashFactory,

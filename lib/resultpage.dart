@@ -1,4 +1,8 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+
 
 
 /// *
@@ -19,6 +23,20 @@ class ResultPage extends StatefulWidget {
 class _ResultPageState extends State<ResultPage> {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return MaterialApp(
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+      ),
+      home: Scaffold(
+        // appBar: AppBar(
+        //   backgroundColor: const Color(0xff7FB77E),
+        // ),
+          body: Center(
+              child: Text("결과 : ${Get.arguments}"),
+          )
+      ),
+    );
   }
 }
