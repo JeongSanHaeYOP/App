@@ -321,6 +321,7 @@ class _CalculatePriceState extends State<CalculatePrice> {
                     Text(price[i].toString()),
                     Checkbox(
                         activeColor: ColorStyles.mainGreen,
+                        splashRadius: 0,
                         value: checkList[i],
                         onChanged: (value) => {
                           setState(() {
