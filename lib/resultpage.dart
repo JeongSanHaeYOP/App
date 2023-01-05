@@ -34,7 +34,10 @@ class _ResultPageState extends State<ResultPage> {
         //   backgroundColor: const Color(0xff7FB77E),
         // ),
           body: Center(
-              child: Text("결과 : ${Get.arguments}"),
+              child: Container(
+                  margin: const EdgeInsets.all(30),
+                  child: Text("아이템: ${Get.arguments['items']}\n합계 : ${Get.arguments['sum']}"),
+              ),
           )
       ),
     );
