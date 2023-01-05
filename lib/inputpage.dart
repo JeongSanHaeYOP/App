@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:frontend_jshy/resultpage.dart';
 import 'package:frontend_jshy/theme/colors.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -204,7 +205,19 @@ class _CalculatePriceState extends State<CalculatePrice> {
                     hoverColor: Colors.transparent,
                   ),
                   child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        var items = [];
+                        for(int i = 0; i < checkList.length; i++) {
+                          if(checkList[i]){
+                            var item = [_itemList[i], _priceList[i]];
+                            items.add(item);
+                            print(item);
+                          }
+                        }
+                        Map result = {'items' : items, 'sum' : sum };
+                        print(result);
+                        Get.to(() => const ResultPage(), arguments: result);
+                      },
                       style: ButtonStyle(
                         foregroundColor: const MaterialStatePropertyAll(Colors.white),
                         splashFactory: NoSplash.splashFactory,
@@ -234,6 +247,7 @@ class _CalculatePriceState extends State<CalculatePrice> {
     );
   }
 
+  var a = [];
   Widget itemPriceList(List<String> item, List<int> price) {
     return Scrollbar(
       thickness: 4.0, // 스크롤 너비
@@ -255,17 +269,16 @@ class _CalculatePriceState extends State<CalculatePrice> {
                       activeColor: ColorStyles.mainGreen,
                       splashRadius: 0,
                       value: checkList[i],
-                        onChanged: (value) => {
-                          setState(() {
-                            checkList[i] = value!;
-                            if(value == true) {
-                              sum = sum + price[i];
-                            } else {
-                              sum = sum - price[i];
-                            }
-                          })
-                        },
-                      )
+                      onChanged: (value) => {
+                        setState(() {
+                          checkList[i] = value!;
+                          if(value == true) {
+                            sum = sum + price[i];
+                          } else {
+                            sum = sum - price[i];
+                          }
+                        })
+                      },)
                   ],)
                 ],
               ),
