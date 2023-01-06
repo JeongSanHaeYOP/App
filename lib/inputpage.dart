@@ -41,16 +41,13 @@ class _InputPageState extends State<InputPage> {
                     color: Colors.white,
                     icon: const Icon(Icons.arrow_back_ios_new)),
               ),
-              body: Container(
-                margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: const [
-                    // 가격 텍스트와 총액이 들어간 박스
-                    Expanded(child: CalculatePrice())
-                  ],
-                ),
-              )
+              body: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: const [
+                  // 가격 텍스트와 총액이 들어간 박스
+                  CalculatePrice()
+                ],
+              ),
           ),
         )
     );
@@ -161,7 +158,7 @@ class _CalculatePriceState extends State<CalculatePrice> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+      return Column(
       children: [
         Container(
           margin: const EdgeInsets.fromLTRB(0, 10, 0, 0),
@@ -183,7 +180,10 @@ class _CalculatePriceState extends State<CalculatePrice> {
                 )
             ),
             width: 350,
-            child: itemPriceList(_itemList, _priceList)
+            constraints: const BoxConstraints(
+              maxHeight: 500
+            ),
+            child: itemPriceList(_itemList, _priceList),
         ),
         Container(
             margin: const EdgeInsets.fromLTRB(30, 10, 30, 0),
@@ -254,6 +254,7 @@ class _CalculatePriceState extends State<CalculatePrice> {
       isAlwaysShown: true,
       radius: const Radius.circular(8.0), // 스크롤 라운딩
       child: SingleChildScrollView(
+        reverse: true,
         padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -265,20 +266,23 @@ class _CalculatePriceState extends State<CalculatePrice> {
                   Text(item[i]),
                   Row(children: [
                     Text(price[i].toString()),
-                    Checkbox(
-                      activeColor: ColorStyles.mainGreen,
-                      splashRadius: 0,
-                      value: checkList[i],
-                      onChanged: (value) => {
-                        setState(() {
-                          checkList[i] = value!;
-                          if(value == true) {
-                            sum = sum + price[i];
-                          } else {
-                            sum = sum - price[i];
-                          }
-                        })
-                      },)
+                    Container(
+                      margin: const EdgeInsets.fromLTRB(0, 0, 10, 0),
+                      child: Checkbox(
+                        activeColor: ColorStyles.mainGreen,
+                        splashRadius: 0,
+                        value: checkList[i],
+                        onChanged: (value) => {
+                          setState(() {
+                            checkList[i] = value!;
+                            if(value == true) {
+                              sum = sum + price[i];
+                            } else {
+                              sum = sum - price[i];
+                            }
+                          })
+                        },),
+                    )
                   ],)
                 ],
               ),
