@@ -251,6 +251,9 @@ class _CalculatePriceState extends State<CalculatePrice> {
               )
           ),
           width: 350,
+          constraints: const BoxConstraints(
+            maxHeight: 150,
+          ),
           child: itemPriceList(_itemList, _priceList)
         ),
         Container(
@@ -311,31 +314,36 @@ class _CalculatePriceState extends State<CalculatePrice> {
       isAlwaysShown: true,
       radius: const Radius.circular(8.0), // 스크롤 라운딩
       child: SingleChildScrollView(
+        reverse: true,
         padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             for (int i = 0; i < price.length; i++)
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(item[i]),
-                  Row(children: [
-                    Text(price[i].toString()),
-                    Checkbox(
-                        activeColor: ColorStyles.mainGreen,
-                        splashRadius: 0,
-                        value: checkList[i],
-                        onChanged: (value) => {
-                          setState(() {
-                            checkList[i] = value!;
-                            if(value == true) {
-                              sum = sum + price[i];
-                            } else {
-                              sum = sum - price[i];
-                            }
-                          })
-                        })
+                  Row(
+                    children: [
+                      Text(price[i].toString()),
+                      Container(
+                        margin: const EdgeInsets.fromLTRB(0, 0, 10, 0),
+                        child: Checkbox(
+                            activeColor: ColorStyles.mainGreen,
+                            splashRadius: 0,
+                            value: checkList[i],
+                            onChanged: (value) => {
+                              setState(() {
+                                checkList[i] = value!;
+                                if(value == true) {
+                                  sum = sum + price[i];
+                                } else {
+                                  sum = sum - price[i];
+                                }
+                              })
+                            }),
+                      )
                   ],)
                 ],
               ),
