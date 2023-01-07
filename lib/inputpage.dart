@@ -29,28 +29,27 @@ class _InputPageState extends State<InputPage> {
             hoverColor: Colors.transparent,
           ),
           home: Scaffold(
-              resizeToAvoidBottomInset : false,
-              appBar: AppBar(
-                backgroundColor: ColorStyles.mainGreen,
-                leading: IconButton(
-                    onPressed: () async {
-                      if(await _onBackKey()) {
-                        Get.back();
-                      }
-                    },
-                    color: Colors.white,
-                    icon: const Icon(Icons.arrow_back_ios_new)),
-              ),
-              body: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: const [
-                  // 가격 텍스트와 총액이 들어간 박스
-                  CalculatePrice()
-                ],
-              ),
+            resizeToAvoidBottomInset: false,
+            appBar: AppBar(
+              backgroundColor: ColorStyles.mainGreen,
+              leading: IconButton(
+                  onPressed: () async {
+                    if (await _onBackKey()) {
+                      Get.back();
+                    }
+                  },
+                  color: Colors.white,
+                  icon: const Icon(Icons.arrow_back_ios_new)),
+            ),
+            body: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: const [
+                // 가격 텍스트와 총액이 들어간 박스
+                CalculatePrice()
+              ],
+            ),
           ),
-        )
-    );
+        ));
   }
 
   Future<bool> _onBackKey() async {
@@ -95,40 +94,38 @@ class _InputPageState extends State<InputPage> {
                           child: const Text(
                             "돌아가기",
                             style: TextStyle(
-                                color: Colors.white,
-                                letterSpacing: 2,
+                              color: Colors.white,
+                              letterSpacing: 2,
                             ),
-                          )
-                      ),
+                          )),
                     ),
-                   Container(
-                     width: double.infinity,
-                     margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                       child: OutlinedButton(
-                         onPressed: () {
-                           Navigator.pop(context, false);
-                           },
-                         style: OutlinedButton.styleFrom(
-                           splashFactory: NoSplash.splashFactory,
-                           alignment: Alignment.center,
-                           disabledBackgroundColor: ColorStyles.subGreen,
-                           shape: RoundedRectangleBorder(
-                             borderRadius: BorderRadius.circular(10),
-                           ),
-                           side: const BorderSide(
-                             width: 1,
-                             color: Colors.grey,
-                           ),
-                         ),
-                         child: const Text(
-                           "취소",
-                           style: TextStyle(
-                               color: Colors.black,
-                               letterSpacing: 2,
-                           ),
-                         )
-                     ),
-                   )
+                    Container(
+                      width: double.infinity,
+                      margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                      child: OutlinedButton(
+                          onPressed: () {
+                            Navigator.pop(context, false);
+                          },
+                          style: OutlinedButton.styleFrom(
+                            splashFactory: NoSplash.splashFactory,
+                            alignment: Alignment.center,
+                            disabledBackgroundColor: ColorStyles.subGreen,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            side: const BorderSide(
+                              width: 1,
+                              color: Colors.grey,
+                            ),
+                          ),
+                          child: const Text(
+                            "취소",
+                            style: TextStyle(
+                              color: Colors.black,
+                              letterSpacing: 2,
+                            ),
+                          )),
+                    )
                   ],
                 ),
               )
@@ -140,7 +137,6 @@ class _InputPageState extends State<InputPage> {
 
 List<String> _itemList = [];
 List<int> _priceList = [];
-
 
 class CalculatePrice extends StatefulWidget {
   const CalculatePrice({Key? key}) : super(key: key);
@@ -155,35 +151,24 @@ class _CalculatePriceState extends State<CalculatePrice> {
   List<String> itemList = _itemList;
   var checkList = List<bool>.filled(_itemList.length, false, growable: true);
 
-
   @override
   Widget build(BuildContext context) {
-      return Column(
+    return Column(
       children: [
         Container(
           margin: const EdgeInsets.fromLTRB(0, 10, 0, 0),
           child: newTextField(),
         ),
         Container(
-            margin: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-            padding: const EdgeInsets.fromLTRB(0, 10, 0, 5),
-            decoration: const BoxDecoration(
-                border: Border(
-                    top: BorderSide(
-                        color: ColorStyles.mainGreen,
-                        width: 3
-                    ),
-                    bottom: BorderSide(
-                        color: ColorStyles.mainGreen,
-                        width: 3
-                    )
-                )
-            ),
-            width: 350,
-            constraints: const BoxConstraints(
-              maxHeight: 500
-            ),
-            child: itemPriceList(_itemList, _priceList),
+          margin: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+          padding: const EdgeInsets.fromLTRB(0, 10, 0, 5),
+          decoration: const BoxDecoration(
+              border: Border(
+                  top: BorderSide(color: ColorStyles.mainGreen, width: 3),
+                  bottom: BorderSide(color: ColorStyles.mainGreen, width: 3))),
+          width: 350,
+          constraints: const BoxConstraints(maxHeight: 500),
+          child: itemPriceList(_itemList, _priceList),
         ),
         Container(
             margin: const EdgeInsets.fromLTRB(30, 10, 30, 0),
@@ -196,7 +181,8 @@ class _CalculatePriceState extends State<CalculatePrice> {
                 ),
                 Text(
                   sum.toString(),
-                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                      fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 Theme(
                   data: Theme.of(context).copyWith(
@@ -207,23 +193,25 @@ class _CalculatePriceState extends State<CalculatePrice> {
                   child: ElevatedButton(
                       onPressed: () {
                         var items = [];
-                        for(int i = 0; i < checkList.length; i++) {
-                          if(checkList[i]){
+                        for (int i = 0; i < checkList.length; i++) {
+                          if (checkList[i]) {
                             var item = [_itemList[i], _priceList[i]];
                             items.add(item);
                             print(item);
                           }
                         }
-                        Map result = {'items' : items, 'sum' : sum };
+                        Map result = {'items': items, 'sum': sum};
                         print(result);
                         Get.to(() => const ResultPage(), arguments: result);
                       },
                       style: ButtonStyle(
-                        foregroundColor: const MaterialStatePropertyAll(Colors.white),
+                        foregroundColor:
+                            const MaterialStatePropertyAll(Colors.white),
                         splashFactory: NoSplash.splashFactory,
-                        shadowColor: const MaterialStatePropertyAll(Colors.transparent),
+                        shadowColor:
+                            const MaterialStatePropertyAll(Colors.transparent),
                         backgroundColor: MaterialStateProperty.resolveWith(
-                              (states) {
+                          (states) {
                             if (states.contains(MaterialState.disabled)) {
                               return ColorStyles.subGreen; // 연한 초록
                             } else {
@@ -231,18 +219,13 @@ class _CalculatePriceState extends State<CalculatePrice> {
                             }
                           },
                         ),
-                        shape: MaterialStateProperty.all(
-                            RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0)
-                            )
-                        ),
+                        shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.0))),
                       ),
-                      child: const Text("1/N")
-                  ),
+                      child: const Text("1/N")),
                 )
               ],
-            )
-        ),
+            )),
       ],
     );
   }
@@ -264,26 +247,29 @@ class _CalculatePriceState extends State<CalculatePrice> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(item[i]),
-                  Row(children: [
-                    Text(price[i].toString()),
-                    Container(
-                      margin: const EdgeInsets.fromLTRB(0, 0, 10, 0),
-                      child: Checkbox(
-                        activeColor: ColorStyles.mainGreen,
-                        splashRadius: 0,
-                        value: checkList[i],
-                        onChanged: (value) => {
-                          setState(() {
-                            checkList[i] = value!;
-                            if(value == true) {
-                              sum = sum + price[i];
-                            } else {
-                              sum = sum - price[i];
-                            }
-                          })
-                        },),
-                    )
-                  ],)
+                  Row(
+                    children: [
+                      Text(price[i].toString()),
+                      Container(
+                        margin: const EdgeInsets.fromLTRB(0, 0, 10, 0),
+                        child: Checkbox(
+                          activeColor: ColorStyles.mainGreen,
+                          splashRadius: 0,
+                          value: checkList[i],
+                          onChanged: (value) => {
+                            setState(() {
+                              checkList[i] = value!;
+                              if (value == true) {
+                                sum = sum + price[i];
+                              } else {
+                                sum = sum - price[i];
+                              }
+                            })
+                          },
+                        ),
+                      )
+                    ],
+                  )
                 ],
               ),
           ],
@@ -291,6 +277,7 @@ class _CalculatePriceState extends State<CalculatePrice> {
       ),
     );
   }
+
   Widget newTextField() {
     TextEditingController itemTextController = TextEditingController();
     TextEditingController priceTextController = TextEditingController();
@@ -320,18 +307,20 @@ class _CalculatePriceState extends State<CalculatePrice> {
           width: 100,
           child: TextField(
             keyboardType: TextInputType.number,
-            inputFormatters: [FilteringTextInputFormatter.allow(RegExp('[0-9]'))],
+            inputFormatters: [
+              FilteringTextInputFormatter.allow(RegExp('[0-9]'))
+            ],
             decoration: const InputDecoration(
                 hintText: "금액",
                 focusedBorder: UnderlineInputBorder(
                   borderSide: BorderSide(color: ColorStyles.subGreen, width: 2),
                 ),
                 enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: ColorStyles.mainGreen, width: 2),
+                  borderSide:
+                      BorderSide(color: ColorStyles.mainGreen, width: 2),
                 ),
                 focusColor: ColorStyles.mainGreen,
-                contentPadding: EdgeInsets.all(5)
-            ),
+                contentPadding: EdgeInsets.all(5)),
             cursorColor: ColorStyles.mainGreen,
             controller: priceTextController,
           ),
@@ -345,7 +334,7 @@ class _CalculatePriceState extends State<CalculatePrice> {
             onPressed: () {
               setState(() {
                 _priceList.add(int.parse(priceTextController.text));
-                if(itemTextController.text == "") {
+                if (itemTextController.text == "") {
                   item = "추가 항목";
                 } else {
                   item = itemTextController.text;
