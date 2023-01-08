@@ -12,7 +12,7 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:get/route_manager.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:multi_image_picker/multi_image_picker.dart';
+// import 'package:multi_image_picker/multi_image_picker.dart';
 
 /// 결과 페이지: OCR 결과 화면
 /// 1. 디자인
@@ -403,15 +403,26 @@ class _CalculatePriceState extends State<CalculatePrice> {
             ),
             onPressed: () {
               setState(() {
-                _priceList.add(int.parse(priceTextController.text));
                 if (itemTextController.text == "") {
                   item = "추가 항목";
                 } else {
                   item = itemTextController.text;
                 }
-                _itemList.add(item);
-                checkList.add(true);
-                sum = sum + int.parse(priceTextController.text);
+                if (priceTextController.text.isEmpty) {
+                  Get.snackbar("정산해욥", "금액을 입력해주세요",
+                      backgroundColor: Colors.white70,
+                      icon: const Icon(
+                        Icons.warning_amber_rounded,
+                        color: ColorStyles.mainGreen,
+                        size: 30,
+                      ),
+                      shouldIconPulse: false);
+                } else {
+                  _priceList.add(int.parse(priceTextController.text));
+                  sum = sum + int.parse(priceTextController.text);
+                  _itemList.add(item);
+                  checkList.add(true);
+                }
               });
             },
             child: const Text(

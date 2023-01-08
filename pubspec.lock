@@ -57,6 +57,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.0+3"
+  dotted_line:
+    dependency: "direct main"
+    description:
+      name: dotted_line
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.1.0"
   fake_async:
     dependency: transitive
     description:
@@ -142,13 +149,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.0.2"
-  image_crop:
-    dependency: transitive
-    description:
-      name: image_crop
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.4.1"
   image_cropper:
     dependency: "direct main"
     description:
@@ -240,20 +240,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.8.0"
-  multi_image_crop:
-    dependency: "direct main"
-    description:
-      name: multi_image_crop
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.0.2"
-  multi_image_picker:
-    dependency: "direct main"
-    description:
-      name: multi_image_picker
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "4.8.01"
   path:
     dependency: transitive
     description:
@@ -338,13 +324,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.3"
-  preload_page_view:
-    dependency: transitive
-    description:
-      name: preload_page_view
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.1.6"
   process:
     dependency: transitive
     description:
@@ -352,13 +331,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.2.4"
-  scroll_to_index:
-    dependency: transitive
-    description:
-      name: scroll_to_index
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.1.1"
   sky_engine:
     dependency: transitive
     description: flutter
