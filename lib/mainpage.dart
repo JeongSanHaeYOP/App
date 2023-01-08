@@ -9,8 +9,8 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:get/route_manager.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:multi_image_crop/multi_image_crop.dart';
-import 'package:multi_image_picker/multi_image_picker.dart';
+// import 'package:multi_image_crop/multi_image_crop.dart';
+// import 'package:multi_image_picker/multi_image_picker.dart';
 // import 'package:multi_crop_picker/picker.dart';
 // import 'package:multi_image_crop/multi_image_crop.dart';
 import 'dart:io';
@@ -30,24 +30,21 @@ class MainPage extends StatefulWidget {
 
   @override
   State<MainPage> createState() => _MainPageState();
-
 }
 
 class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
-
     return Center(
       child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget> [
+          children: <Widget>[
             Container(
               margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
               child: getInputButton(),
             ),
             getImageButton(),
-          ]
-      ),
+          ]),
     );
   }
 
@@ -56,7 +53,6 @@ class _MainPageState extends State<MainPage> {
 
   late List<XFile?> _imgList;
   final List<CroppedFile?> _croppedImgList = [];
-
 
   Future getImage() async {
     // Initialized croppedImageList
@@ -67,14 +63,15 @@ class _MainPageState extends State<MainPage> {
       _imgList = imgList!;
     });
 
-    if(_imgList.isNotEmpty) {
+    if (_imgList.isNotEmpty) {
       cropImage();
     }
   }
+
   Future<void> cropImage() async {
     if (_imgList.isNotEmpty) {
       // 고른 이미지들 각각 크롭 액티비티 돌리기
-      for (int i = 0; i < _imgList.length; i ++) {
+      for (int i = 0; i < _imgList.length; i++) {
         var croppedImage = await ImageCropper().cropImage(
           sourcePath: _imgList[i]!.path,
           compressFormat: ImageCompressFormat.jpg,
@@ -99,11 +96,11 @@ class _MainPageState extends State<MainPage> {
       }
 
       List<File> imageFileList = [];
-      for (int i = 0; i < _croppedImgList.length; i ++) {
+      for (int i = 0; i < _croppedImgList.length; i++) {
         imageFileList.add(File(_croppedImgList[i]!.path));
       }
 
-      if(_croppedImgList.isNotEmpty) {
+      if (_croppedImgList.isNotEmpty) {
         nextPage(imageFileList);
       }
     }
@@ -162,7 +159,7 @@ class _MainPageState extends State<MainPage> {
   // }
 
   void nextPage(List<File> images) {
-    if(images.isEmpty) {
+    if (images.isEmpty) {
       Get.to(() => const MainPage());
       print("------------Empty");
     } else {
@@ -190,20 +187,15 @@ class _MainPageState extends State<MainPage> {
                 size: 70,
                 color: Colors.white,
               ),
-            )
-        ),
+            )),
         Container(
             margin: const EdgeInsets.fromLTRB(0, 50, 0, 0),
-            child: Column(
-                children: <Widget> [
-                  Container(
-                    margin: const EdgeInsets.fromLTRB(0, 0, 0, 10),
-                    child: const Text("이미지로 추가하기",
-                        style: TextStyle(fontSize: 20)),
-                  ),
-                ]
-            )
-        ),
+            child: Column(children: <Widget>[
+              Container(
+                margin: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+                child: const Text("이미지로 추가하기", style: TextStyle(fontSize: 20)),
+              ),
+            ])),
       ],
     );
   }
@@ -229,26 +221,16 @@ class _MainPageState extends State<MainPage> {
                 size: 70,
                 color: Colors.white,
               ),
-            )
-        ),
+            )),
         Container(
             margin: const EdgeInsets.fromLTRB(0, 50, 0, 0),
-            child: Column(
-                children: <Widget> [
-                  Container(
-                    margin: const EdgeInsets.fromLTRB(0, 0, 0, 10),
-                    child: const Text("정산내용 입력하기",
-                        style: TextStyle(fontSize: 20)),
-                  ),
-                ]
-            )
-        ),
+            child: Column(children: <Widget>[
+              Container(
+                margin: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+                child: const Text("정산내용 입력하기", style: TextStyle(fontSize: 20)),
+              ),
+            ])),
       ],
     );
   }
-
-
 }
-
-
-

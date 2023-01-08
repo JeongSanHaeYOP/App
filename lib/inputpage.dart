@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:frontend_jshy/resultpage.dart';
 import 'package:frontend_jshy/theme/colors.dart';
+import 'package:frontend_jshy/widgets/subwidgets.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 
@@ -202,7 +203,8 @@ class _CalculatePriceState extends State<CalculatePrice> {
                         }
                         Map result = {'items': items, 'sum': sum};
                         print(result);
-                        Get.to(() => const ResultPage(), arguments: result);
+                        // Get.to(() => const ResultPage(), arguments: result);
+                        Get.bottomSheet(const SelectPerBottomSheet());
                       },
                       style: ButtonStyle(
                         foregroundColor:
@@ -333,15 +335,26 @@ class _CalculatePriceState extends State<CalculatePrice> {
             ),
             onPressed: () {
               setState(() {
-                _priceList.add(int.parse(priceTextController.text));
                 if (itemTextController.text == "") {
                   item = "추가 항목";
                 } else {
                   item = itemTextController.text;
                 }
-                _itemList.add(item);
-                checkList.add(true);
-                sum = sum + int.parse(priceTextController.text);
+                if (priceTextController.text.isEmpty) {
+                  Get.snackbar("정산해욥", "금액을 입력해주세요",
+                      backgroundColor: Colors.white70,
+                      icon: const Icon(
+                        Icons.warning_amber_rounded,
+                        color: ColorStyles.mainGreen,
+                        size: 30,
+                      ),
+                      shouldIconPulse: false);
+                } else {
+                  _priceList.add(int.parse(priceTextController.text));
+                  sum = sum + int.parse(priceTextController.text);
+                  _itemList.add(item);
+                  checkList.add(true);
+                }
               });
             },
             child: const Text(
