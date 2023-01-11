@@ -17,7 +17,17 @@ class _SelectPerBottomSheetState extends State<SelectPerBottomSheet> {
   final _valueList = [for (var i = 0; i < num; i++) i + 1];
   int _selectedValue = 1;
 
-  final _bankList = ["국민", "기업", "농협", "신한", "우리", "하나", "카카오뱅크", "기타"];
+  final _bankList = [
+    "국민",
+    "기업",
+    "농협",
+    "새마을 금고",
+    "신한",
+    "우리",
+    "하나",
+    "카카오뱅크",
+    "기타"
+  ];
   String _selectedBank = "기타";
 
   bool _isChecked = false;
