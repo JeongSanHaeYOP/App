@@ -1,11 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 
+import '../resultpage.dart';
 import '../theme/colors.dart';
 
 class SelectPerBottomSheet extends StatefulWidget {
-  const SelectPerBottomSheet({Key? key}) : super(key: key);
+  final Map<dynamic, dynamic> result;
+  const SelectPerBottomSheet(this.result, {Key? key}) : super(key: key);
 
   @override
   State<SelectPerBottomSheet> createState() => _SelectPerBottomSheetState();
@@ -17,6 +21,7 @@ class _SelectPerBottomSheetState extends State<SelectPerBottomSheet> {
   final _valueList = [for (var i = 0; i < num; i++) i + 1];
   int _selectedValue = 1;
 
+  String _selectedBank = "기타";
   final _bankList = [
     "국민",
     "기업",
@@ -28,14 +33,24 @@ class _SelectPerBottomSheetState extends State<SelectPerBottomSheet> {
     "카카오뱅크",
     "기타"
   ];
-  String _selectedBank = "기타";
 
   bool _isChecked = false;
 
+  final TextEditingController _bankTextController = TextEditingController();
+  void initState() {
+    _bankTextController.addListener(() {
+      print(_bankTextController.text);
+    });
+    super.initState();
+  }
+
+  void dispose() {
+    _bankTextController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    TextEditingController personTextController = TextEditingController();
-
     return Container(
       padding: const EdgeInsets.all(30),
       color: Colors.white,
@@ -108,50 +123,108 @@ class _SelectPerBottomSheetState extends State<SelectPerBottomSheet> {
                       }))
             ],
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          Stack(
             children: [
-              AbsorbPointer(
-                absorbing: !_isChecked,
-                child: SizedBox(
-                    width: 100,
-                    height: 50,
-                    child: DropdownButton(
-                      elevation: 0,
-                      autofocus: false,
-                      focusColor: ColorStyles.subGreen,
-                      dropdownColor: ColorStyles.subGrey,
-                      borderRadius:
-                          const BorderRadius.all(Radius.circular(5.0)),
-                      underline: Container(
-                        height: 2,
-                        color: ColorStyles.mainGreen,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  AbsorbPointer(
+                    absorbing: !_isChecked,
+                    child: SizedBox(
+                        width: 100,
+                        height: 50,
+                        child: DropdownButton(
+                          elevation: 0,
+                          autofocus: false,
+                          focusColor: ColorStyles.subGreen,
+                          dropdownColor: ColorStyles.subGrey,
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(5.0)),
+                          underline: Container(
+                            height: 2,
+                            color: ColorStyles.mainGreen,
+                          ),
+                          menuMaxHeight: 200,
+                          value: _selectedBank,
+                          items: _bankList.map((item) {
+                            return DropdownMenuItem(
+                                value: item,
+                                child: Text(
+                                  item.toString(),
+                                ));
+                          }).toList(),
+                          onChanged: (value) {
+                            setState(() {
+                              _selectedBank = value!;
+                            });
+                          },
+                        )),
+                  ),
+                  AbsorbPointer(
+                    absorbing: !_isChecked,
+                    child: Container(
+                      margin: const EdgeInsets.fromLTRB(0, 0, 0, 16),
+                      width: 200,
+                      child: TextField(
+                        controller: _bankTextController,
                       ),
-                      menuMaxHeight: 200,
-                      value: _selectedBank,
-                      items: _bankList.map((item) {
-                        return DropdownMenuItem(
-                            value: item,
-                            child: Text(
-                              item.toString(),
-                            ));
-                      }).toList(),
-                      onChanged: (value) {
-                        setState(() {
-                          _selectedBank = value!;
-                        });
-                      },
-                    )),
+                    ),
+                  )
+                ],
               ),
-              AbsorbPointer(
-                absorbing: !_isChecked,
-                child: const SizedBox(
-                  width: 200,
-                  child: TextField(),
-                ),
-              )
+              if (!_isChecked)
+                Container(
+                  width: double.infinity,
+                  height: 50,
+                  decoration: const BoxDecoration(color: Colors.white),
+                )
             ],
           ),
+          Center(
+            child: Container(
+              margin: const EdgeInsets.all(10),
+              child: Theme(
+                data: Theme.of(context).copyWith(
+                  splashColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                  hoverColor: Colors.transparent,
+                ),
+                child: ElevatedButton(
+                    onPressed: () {
+                      widget.result['num'] = _selectedValue;
+                      widget.result['result'] =
+                          (widget.result['sum'] / _selectedValue);
+                      if (_isChecked) {
+                        widget.result['bank'] =
+                            "$_selectedBank ${_bankTextController.text}";
+                      } else {
+                        widget.result['bank'] = '';
+                      }
+                      Get.to(() => const ResultPage(),
+                          arguments: widget.result);
+                    },
+                    style: ButtonStyle(
+                      foregroundColor:
+                          const MaterialStatePropertyAll(Colors.white),
+                      splashFactory: NoSplash.splashFactory,
+                      shadowColor:
+                          const MaterialStatePropertyAll(Colors.transparent),
+                      backgroundColor: MaterialStateProperty.resolveWith(
+                        (states) {
+                          if (states.contains(MaterialState.disabled)) {
+                            return ColorStyles.subGreen; // 연한 초록
+                          } else {
+                            return ColorStyles.mainGreen; // 진한 초록
+                          }
+                        },
+                      ),
+                      shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20.0))),
+                    ),
+                    child: const Text("계속")),
+              ),
+            ),
+          )
         ],
       ),
     );
