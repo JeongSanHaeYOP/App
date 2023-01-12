@@ -204,7 +204,7 @@ class _CalculatePriceState extends State<CalculatePrice> {
                         Map result = {'items': items, 'sum': sum};
                         print(result);
                         // Get.to(() => const ResultPage(), arguments: result);
-                        Get.bottomSheet(const SelectPerBottomSheet());
+                        Get.bottomSheet(SelectPerBottomSheet(result));
                       },
                       style: ButtonStyle(
                         foregroundColor:

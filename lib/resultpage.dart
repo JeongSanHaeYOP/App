@@ -40,8 +40,8 @@ class _ResultPageState extends State<ResultPage> {
                 margin: const EdgeInsets.all(30),
                 child: Column(
                   children: [
-                    BillCard(),
-                    TextButton(onPressed: () {}, child: Text("1/N")),
+                    const BillCard(),
+                    TextButton(onPressed: () {}, child: const Text("1/N")),
                   ],
                 )
 
@@ -94,8 +94,9 @@ class _BillCardState extends State<BillCard> {
               ),
               dotBorder(1),
               billText("총합계", 17, 'sum', FontWeight.normal),
+              billText("총 인원", 17, 'num', FontWeight.normal),
               dotBorder(2),
-              billText("1인 지불 금액", 17, 'sum', FontWeight.bold),
+              billText("1인 지불 금액", 17, 'result', FontWeight.bold),
               Container(
                 padding: UiStyles.itemsPadding,
               )
