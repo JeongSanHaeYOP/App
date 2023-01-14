@@ -54,6 +54,13 @@ dependencies:
   # Number format
   intl: ^0.17.0
 
+  # KaKao Share
+#  kakao_flutter_sdk: ^1.3.1
+
+  # share
+  share_plus: ^6.3.0
+
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

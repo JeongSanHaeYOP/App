@@ -133,7 +133,7 @@ class _SelectPerBottomSheetState extends State<SelectPerBottomSheet> {
                   AbsorbPointer(
                     absorbing: !_isChecked,
                     child: SizedBox(
-                        width: 100,
+                        width: 110,
                         height: 50,
                         child: DropdownButton(
                           elevation: 0,
