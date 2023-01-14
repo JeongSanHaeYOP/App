@@ -54,14 +54,17 @@ class _MainPageState extends State<MainPage> {
   late List<XFile?> _imgList;
   final List<CroppedFile?> _croppedImgList = [];
 
-  Future getImage() async {
+  Future<void> getImage() async {
     // Initialized croppedImageList
     _croppedImgList.clear();
     // for gallery
     var imgList = await ImagePicker().pickMultiImage();
-    setState(() {
-      _imgList = imgList!;
-    });
+    if (imgList != null) {
+      setState(() {
+        _imgList = imgList!;
+        print(_imgList);
+      });
+    }
 
     if (_imgList.isNotEmpty) {
       cropImage();
@@ -70,6 +73,7 @@ class _MainPageState extends State<MainPage> {
 
   Future<void> cropImage() async {
     if (_imgList.isNotEmpty) {
+      print('ler');
       // 고른 이미지들 각각 크롭 액티비티 돌리기
       for (int i = 0; i < _imgList.length; i++) {
         var croppedImage = await ImageCropper().cropImage(

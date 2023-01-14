@@ -6,6 +6,7 @@ import 'package:frontend_jshy/theme/colors.dart';
 import 'package:frontend_jshy/widgets/subwidgets.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:intl/intl.dart';
 
 class InputPage extends StatefulWidget {
   const InputPage({Key? key}) : super(key: key);
@@ -151,6 +152,7 @@ class _CalculatePriceState extends State<CalculatePrice> {
   List<int> priceList = _priceList;
   List<String> itemList = _itemList;
   var checkList = List<bool>.filled(_itemList.length, false, growable: true);
+  var numFormat = NumberFormat('###,###,###,###');
 
   @override
   Widget build(BuildContext context) {
@@ -181,7 +183,7 @@ class _CalculatePriceState extends State<CalculatePrice> {
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 Text(
-                  sum.toString(),
+                  numFormat.format(sum),
                   style: const TextStyle(
                       fontSize: 20, fontWeight: FontWeight.bold),
                 ),
@@ -251,7 +253,7 @@ class _CalculatePriceState extends State<CalculatePrice> {
                   Text(item[i]),
                   Row(
                     children: [
-                      Text(price[i].toString()),
+                      Text(numFormat.format(price[i])),
                       Container(
                         margin: const EdgeInsets.fromLTRB(0, 0, 10, 0),
                         child: Checkbox(

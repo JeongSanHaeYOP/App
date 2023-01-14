@@ -21,7 +21,7 @@ class _SelectPerBottomSheetState extends State<SelectPerBottomSheet> {
   final _valueList = [for (var i = 0; i < num; i++) i + 1];
   int _selectedValue = 1;
 
-  String _selectedBank = "기타";
+  String _selectedBank = "직접 입력";
   final _bankList = [
     "국민",
     "기업",
@@ -31,12 +31,13 @@ class _SelectPerBottomSheetState extends State<SelectPerBottomSheet> {
     "우리",
     "하나",
     "카카오뱅크",
-    "기타"
+    "직접 입력"
   ];
 
   bool _isChecked = false;
 
   final TextEditingController _bankTextController = TextEditingController();
+  @override
   void initState() {
     _bankTextController.addListener(() {
       print(_bankTextController.text);
@@ -44,6 +45,7 @@ class _SelectPerBottomSheetState extends State<SelectPerBottomSheet> {
     super.initState();
   }
 
+  @override
   void dispose() {
     _bankTextController.dispose();
     super.dispose();
@@ -166,6 +168,7 @@ class _SelectPerBottomSheetState extends State<SelectPerBottomSheet> {
                       margin: const EdgeInsets.fromLTRB(0, 0, 0, 16),
                       width: 200,
                       child: TextField(
+                        decoration: const InputDecoration(hintText: "계좌 입력"),
                         controller: _bankTextController,
                       ),
                     ),
@@ -193,10 +196,15 @@ class _SelectPerBottomSheetState extends State<SelectPerBottomSheet> {
                     onPressed: () {
                       widget.result['num'] = _selectedValue;
                       widget.result['result'] =
-                          (widget.result['sum'] / _selectedValue);
+                          (widget.result['sum'] / _selectedValue).round();
                       if (_isChecked) {
-                        widget.result['bank'] =
-                            "$_selectedBank ${_bankTextController.text}";
+                        if (_selectedBank == "직접 입력") {
+                          widget.result['bank'] = _bankTextController.text;
+                          print("equals");
+                        } else {
+                          widget.result['bank'] =
+                              "$_selectedBank ${_bankTextController.text}";
+                        }
                       } else {
                         widget.result['bank'] = '';
                       }
