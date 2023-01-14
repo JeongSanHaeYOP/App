@@ -7,6 +7,7 @@ import 'package:frontend_jshy/theme/colors.dart';
 import 'package:frontend_jshy/theme/styles.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:intl/intl.dart';
 
 /// *
 /// 결과페이지
@@ -14,6 +15,7 @@ import 'package:get/get_core/src/get_main.dart';
 /// N 입력하면 총액에서 나누기
 ///
 /// *
+var numFormat = NumberFormat('###,###,###,###');
 
 class ResultPage extends StatefulWidget {
   const ResultPage({Key? key}) : super(key: key);
@@ -39,9 +41,9 @@ class _ResultPageState extends State<ResultPage> {
             child: Container(
                 margin: const EdgeInsets.all(30),
                 child: Column(
-                  children: [
-                    const BillCard(),
-                    TextButton(onPressed: () {}, child: const Text("1/N")),
+                  children: const [
+                    BillCard(),
+                    Text("카카오톡 공유 "),
                   ],
                 )
 
@@ -70,15 +72,7 @@ class _BillCardState extends State<BillCard> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Container(
-                margin: const EdgeInsets.all(20),
-                child: const Center(
-                  child: Text(
-                    "영수증",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
+              titleText("영수증", 20, 20, FontWeight.bold),
               Container(
                 alignment: Alignment.topRight,
                 margin: const EdgeInsets.fromLTRB(0, 0, 30, 10),
@@ -94,12 +88,14 @@ class _BillCardState extends State<BillCard> {
               ),
               dotBorder(1),
               billText("총합계", 17, 'sum', FontWeight.normal),
+              dotBorder(1),
               billText("총 인원", 17, 'num', FontWeight.normal),
               dotBorder(2),
               billText("1인 지불 금액", 17, 'result', FontWeight.bold),
               Container(
                 padding: UiStyles.itemsPadding,
-              )
+              ),
+              bankText(),
               // 계좌 같은 추가 정보
             ],
           )
@@ -124,6 +120,19 @@ class _BillCardState extends State<BillCard> {
     );
   }
 
+  Widget bankText() {
+    if (Get.arguments['bank'] != '') {
+      return Column(
+        children: [
+          titleText("[계좌 정보]", 17, 10, FontWeight.normal),
+          titleText(Get.arguments['bank'], 17, 10, FontWeight.bold),
+        ],
+      );
+    } else {
+      return titleText("송금해주세욥", 17, 10, FontWeight.normal);
+    }
+  }
+
   Widget billText(
       String title, double? titleSize, String type, FontWeight bold) {
     return Container(
@@ -135,10 +144,23 @@ class _BillCardState extends State<BillCard> {
             style: TextStyle(fontSize: titleSize, fontWeight: bold),
           ),
           Text(
-            Get.arguments[type].toString(),
+            numFormat.format(Get.arguments[type]),
             style: TextStyle(fontSize: titleSize, fontWeight: bold),
           )
         ]));
+  }
+
+  Widget titleText(
+      String title, double? titleSize, double margin, FontWeight bold) {
+    return Container(
+      margin: EdgeInsets.all(margin),
+      child: Center(
+        child: Text(
+          title,
+          style: TextStyle(fontSize: titleSize, fontWeight: bold),
+        ),
+      ),
+    );
   }
 }
 
@@ -156,7 +178,7 @@ class Items extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text("${Get.arguments['items'][i][0]}"),
-                  Text("${Get.arguments['items'][i][1]}"),
+                  Text(numFormat.format(Get.arguments['items'][i][1])),
                 ],
               ),
               Container(

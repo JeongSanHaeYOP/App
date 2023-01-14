@@ -8,10 +8,12 @@ import 'package:frontend_jshy/main.dart';
 import 'package:frontend_jshy/mainpage.dart';
 import 'package:frontend_jshy/resultpage.dart';
 import 'package:frontend_jshy/theme/colors.dart';
+import 'package:frontend_jshy/widgets/subwidgets.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/route_manager.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 // import 'package:multi_image_picker/multi_image_picker.dart';
 
 /// 결과 페이지: OCR 결과 화면
@@ -25,6 +27,7 @@ import 'package:image_picker/image_picker.dart';
 // 'assets/images/img2.png',
 // 'assets/images/img3.png'
 List<File> imgList = [];
+var numFormat = NumberFormat('###,###,###,###');
 
 class SelectPage extends StatefulWidget {
   const SelectPage({Key? key}) : super(key: key);
@@ -180,7 +183,7 @@ Widget imageBox(BuildContext context) {
         ),
         itemCount: imgList.length,
         itemBuilder: (BuildContext context, int index) {
-          return Image.file(imgList[index], fit: BoxFit.fitHeight);
+          return Image.file(imgList[index], fit: BoxFit.contain);
         },
       ),
     ),
@@ -252,7 +255,7 @@ class _CalculatePriceState extends State<CalculatePrice> {
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 Text(
-                  sum.toString(),
+                  numFormat.format(sum),
                   style: const TextStyle(
                       fontSize: 20, fontWeight: FontWeight.bold),
                 ),
@@ -274,7 +277,7 @@ class _CalculatePriceState extends State<CalculatePrice> {
                           }
                           Map result = {'items': items, 'sum': sum};
                           print(result);
-                          Get.to(() => const ResultPage(), arguments: result);
+                          Get.bottomSheet(SelectPerBottomSheet(result));
                         },
                         style: ButtonStyle(
                           splashFactory: NoSplash.splashFactory,
@@ -320,7 +323,7 @@ class _CalculatePriceState extends State<CalculatePrice> {
                   Text(item[i]),
                   Row(
                     children: [
-                      Text(price[i].toString()),
+                      Text(numFormat.format(price[i])),
                       Container(
                         margin: const EdgeInsets.fromLTRB(0, 0, 10, 0),
                         child: Checkbox(
