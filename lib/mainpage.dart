@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter/cupertino.dart';
@@ -15,7 +16,7 @@ import 'package:image_picker/image_picker.dart';
 // import 'package:multi_image_crop/multi_image_crop.dart';
 import 'dart:io';
 import 'dart:async';
-
+import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 
 import 'inputpage.dart';
@@ -105,9 +106,28 @@ class _MainPageState extends State<MainPage> {
       }
 
       if (_croppedImgList.isNotEmpty) {
+        var a = await getImageToText(_croppedImgList[0]);
+        print(a);
         nextPage(imageFileList);
       }
     }
+  }
+
+  Future<String> getImageToText(cropFile) async {
+    var bytes = File(cropFile.path.toString()).readAsBytesSync();
+    String img64 = base64Encode(bytes);
+
+    var url = 'https://api.ocr.space/parse/image';
+    var payload = {
+      "base64Image": "data:image/jpg;base64,${img64.toString()}",
+      "language": "kor"
+    };
+    var header = {"apikey": "키는 이메일에 있음"};
+
+    var post = await http.post(Uri.parse(url), body: payload, headers: header);
+    var result = jsonDecode(post.body);
+
+    return result['ParsedResults'][0]['ParsedText'];
   }
 
   // Future<void> cropImage() async {
