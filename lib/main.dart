@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_config/flutter_config.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:frontend_jshy/mainpage.dart';
 import 'package:frontend_jshy/selectpage.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 
-void main() {
+void main() async {
+  await dotenv.load(fileName: "assets/config/.env");
   runApp(const MyApp());
 }
+
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
@@ -23,9 +27,7 @@ class MyApp extends StatelessWidget {
           // ),
           body: Container(
               margin: const EdgeInsets.fromLTRB(0, 30, 0, 0),
-              child: const MainPage()
-          )
-      ),
+              child: const MainPage())),
     );
   }
 }
