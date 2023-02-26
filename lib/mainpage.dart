@@ -3,9 +3,13 @@ import 'dart:typed_data';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_config/flutter_config.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:frontend_jshy/main.dart';
 import 'package:frontend_jshy/selectpage.dart';
 import 'package:frontend_jshy/theme/colors.dart';
+import 'package:frontend_jshy/widgets/loading.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/route_manager.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -34,19 +38,29 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
+  bool _isLoading = false;
+  // var ocrUrl = FlutterConfig.get('OCR_URL');
+  // var apiKey = FlutterConfig.get('API_KEY');
+  var ocrUrl = dotenv.env['OCR_URL'];
+  var apiKey = dotenv.env['API_KEY'];
+
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            Container(
-              margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-              child: getInputButton(),
-            ),
-            getImageButton(),
-          ]),
-    );
+        child: Stack(
+      children: [
+        Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              Container(
+                margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                child: getInputButton(),
+              ),
+              getImageButton(),
+            ]),
+        if (_isLoading) const Loading()
+      ],
+    ));
   }
 
   // XFile? _image;
@@ -63,18 +77,17 @@ class _MainPageState extends State<MainPage> {
     if (imgList != null) {
       setState(() {
         _imgList = imgList!;
-        print(_imgList);
       });
     }
 
     if (_imgList.isNotEmpty) {
+      _isLoading = true;
       cropImage();
     }
   }
 
   Future<void> cropImage() async {
     if (_imgList.isNotEmpty) {
-      print('ler');
       // 고른 이미지들 각각 크롭 액티비티 돌리기
       for (int i = 0; i < _imgList.length; i++) {
         var croppedImage = await ImageCropper().cropImage(
@@ -93,12 +106,14 @@ class _MainPageState extends State<MainPage> {
             ),
           ],
         );
+        _isLoading = true;
         if (croppedImage != null) {
           setState(() {
             _croppedImgList.add(croppedImage);
           });
         }
       }
+      _isLoading = false;
 
       List<File> imageFileList = [];
       for (int i = 0; i < _croppedImgList.length; i++) {
@@ -106,25 +121,49 @@ class _MainPageState extends State<MainPage> {
       }
 
       if (_croppedImgList.isNotEmpty) {
-        var a = await getImageToText(_croppedImgList[0]);
-        print(a);
-        nextPage(imageFileList);
+        // var b = [];
+        // for (int i = 0; i < _croppedImgList.length; i++) {
+        //   var a = await getImageToText(_croppedImgList[i]);
+        //   b.add(a);
+        // }
+        _isLoading = false;
+        var a =
+            "26주적금(5652)\r\n#자동이체\r\n이지윤\r\n#체크카드\r\n주식회사 카카오\r\n#체크카드\r\n주식회사 써브원\r\n#체크카드\r\n다온푸드\r\n#체크카드\r\n-18,000원\r\n143,015원\r\n150,000원\r\n161,015원\r\n-7,500원\r\n11,015원\r\n-3,900원\r\n18,515원\r\n-6,900원\r\n2기415원\r\n-6,500원\r\n29,315원\r\n";
+        List splitData = a.split("\r\n");
+        List<String> itemList = [];
+        List<int> priceList = [];
+        var num = 0;
+        var price = '';
+        for (int i = 0; i < splitData.length; i++) {
+          if (splitData[i].contains('-')) {
+            num++;
+            price = splitData[i].replaceAll('-', '');
+            price = price.replaceAll('원', '');
+            price = price.replaceAll(',', '');
+            itemList.add('항목 $num');
+            priceList.add(int.parse(price));
+          }
+        }
+        var result = {'item': itemList, 'price': priceList};
+        nextPage(imageFileList, result);
+        // Get.to(() => const Loading());
       }
     }
   }
 
   Future<String> getImageToText(cropFile) async {
+    _isLoading = true;
     var bytes = File(cropFile.path.toString()).readAsBytesSync();
     String img64 = base64Encode(bytes);
 
-    var url = 'https://api.ocr.space/parse/image';
+    var url = ocrUrl;
     var payload = {
       "base64Image": "data:image/jpg;base64,${img64.toString()}",
       "language": "kor"
     };
-    var header = {"apikey": "키는 이메일에 있음"};
+    Map<String, String>? header = {"apikey": apiKey!};
 
-    var post = await http.post(Uri.parse(url), body: payload, headers: header);
+    var post = await http.post(Uri.parse(url!), body: payload, headers: header);
     var result = jsonDecode(post.body);
 
     return result['ParsedResults'][0]['ParsedText'];
@@ -182,12 +221,12 @@ class _MainPageState extends State<MainPage> {
   //       });
   // }
 
-  void nextPage(List<File> images) {
+  void nextPage(List<File> images, Map result) {
     if (images.isEmpty) {
       Get.to(() => const MainPage());
-      print("------------Empty");
     } else {
-      Get.to(() => const SelectPage(), arguments: images);
+      Get.to(() => const SelectPage(),
+          arguments: {'img': images, 'result': result});
     }
   }
 

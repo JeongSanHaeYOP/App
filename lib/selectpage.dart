@@ -27,6 +27,9 @@ import 'package:intl/intl.dart';
 // 'assets/images/img2.png',
 // 'assets/images/img3.png'
 List<File> imgList = [];
+List<String> _itemList = [];
+List<int> _priceList = [];
+
 var numFormat = NumberFormat('###,###,###,###');
 
 class SelectPage extends StatefulWidget {
@@ -39,8 +42,15 @@ class SelectPage extends StatefulWidget {
 class _SelectPageState extends State<SelectPage> {
   @override
   Widget build(BuildContext context) {
-    imgList = Get.arguments;
-    print(imgList);
+    // 이미지, 결과 받아오기
+    imgList = Get.arguments['img'];
+    var result = Get.arguments['result'];
+    final item = result['item']?.cast<String>();
+    final price = result['price']?.cast<int>();
+    if (item != null && price != null) {
+      _itemList = item;
+      _priceList = price;
+    }
     return WillPopScope(
         onWillPop: () {
           return _onBackKey();
@@ -207,9 +217,6 @@ Widget imageBox(BuildContext context) {
 ///
 /// OCR 결과 전달해줄때, 따로따로 주어야할듯.. ***
 
-List<String> _itemList = [];
-List<int> _priceList = [];
-
 // final List<bool> checkList = [
 //   false, false, false, false, false, false, false
 // ];
@@ -272,11 +279,9 @@ class _CalculatePriceState extends State<CalculatePrice> {
                             if (checkList[i]) {
                               var item = [_itemList[i], _priceList[i]];
                               items.add(item);
-                              print(item);
                             }
                           }
                           Map result = {'items': items, 'sum': sum};
-                          print(result);
                           Get.bottomSheet(SelectPerBottomSheet(result));
                         },
                         style: ButtonStyle(
