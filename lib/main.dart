@@ -31,3 +31,18 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+class MainApp extends StatelessWidget {
+  const MainApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        // appBar: AppBar(
+        //   backgroundColor: const Color(0xff7FB77E),
+        // ),
+        body: Container(
+            margin: const EdgeInsets.fromLTRB(0, 30, 0, 0),
+            child: const MainPage()));
+  }
+}

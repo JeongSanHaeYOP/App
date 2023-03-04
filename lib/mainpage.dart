@@ -46,21 +46,24 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-        child: Stack(
-      children: [
-        Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              Container(
-                margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                child: getInputButton(),
-              ),
-              getImageButton(),
-            ]),
-        if (_isLoading) const Loading()
-      ],
-    ));
+    return Container(
+      color: Colors.white,
+      child: Center(
+          child: Stack(
+        children: [
+          Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                Container(
+                  margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                  child: getInputButton(),
+                ),
+                getImageButton(),
+              ]),
+          if (_isLoading) const Loading()
+        ],
+      )),
+    );
   }
 
   // XFile? _image;
@@ -135,13 +138,23 @@ class _MainPageState extends State<MainPage> {
         var num = 0;
         var price = '';
         for (int i = 0; i < splitData.length; i++) {
-          if (splitData[i].contains('-')) {
-            num++;
+          if (splitData[i].contains('-') ||
+              splitData[i].contains('원') ||
+              splitData[i].contains(',') ||
+              splitData[i].contains('출금')) {
             price = splitData[i].replaceAll('-', '');
             price = price.replaceAll('원', '');
+            price = price.replaceAll('출금', '');
             price = price.replaceAll(',', '');
-            itemList.add('항목 $num');
-            priceList.add(int.parse(price));
+
+            try {
+              num++;
+              itemList.add('항목 $num');
+              priceList.add(int.parse(price));
+            } catch (e) {
+              print(e);
+              continue;
+            }
           }
         }
         var result = {'item': itemList, 'price': priceList};

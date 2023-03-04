@@ -7,6 +7,7 @@ import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:frontend_jshy/main.dart';
 import 'package:frontend_jshy/theme/colors.dart';
 import 'package:frontend_jshy/theme/styles.dart';
 import 'package:get/get.dart';
@@ -16,6 +17,8 @@ import 'package:path_provider/path_provider.dart';
 import 'dart:ui' as ui;
 
 import 'package:share_plus/share_plus.dart';
+
+import 'mainpage.dart';
 
 /// *
 /// 결과페이지
@@ -50,37 +53,21 @@ class _ResultPageState extends State<ResultPage> {
           body: Center(
             child: Container(
                 margin: const EdgeInsets.all(30),
-                child: Column(
+                child: ListView(
                   children: [
                     RepaintBoundary(
                       key: globalKey,
                       child: const BillCard(),
                     ),
-                    Container(
-                      margin: const EdgeInsets.fromLTRB(0, 30, 0, 10),
-                      child: Theme(
-                          data: Theme.of(context).copyWith(
-                            splashColor: Colors.transparent,
-                            highlightColor: Colors.transparent,
-                            hoverColor: Colors.transparent,
-                          ),
-                          child: RawMaterialButton(
-                            onPressed: () {
-                              _capture();
-                            },
-                            elevation: 0.0,
-                            focusElevation: 0.0,
-                            fillColor: ColorStyles.mainGreen,
-                            padding: const EdgeInsets.all(15.0),
-                            shape: const CircleBorder(),
-                            child: const Icon(
-                              Icons.share,
-                              size: 30,
-                              color: Colors.white,
-                            ),
-                          )),
-                    ),
-                    const Text("공유하기", style: TextStyle(fontSize: 10)),
+                    Center(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          resultButton("SHARE"),
+                          resultButton("HOME"),
+                        ],
+                      ),
+                    )
                   ],
                 )
 
@@ -90,6 +77,57 @@ class _ResultPageState extends State<ResultPage> {
     );
   }
 
+  Widget resultButton(String type) {
+    String title = 'NONE';
+    var icon = Icons.highlight_off;
+    if (type == 'SHARE') {
+      title = '공유하기';
+      icon = Icons.share;
+    } else if (type == 'HOME') {
+      title = '돌아가기';
+      icon = Icons.home_filled;
+    }
+    return Column(
+      children: [
+        Container(
+          margin: const EdgeInsets.fromLTRB(0, 30, 0, 10),
+          child: Theme(
+              data: Theme.of(context).copyWith(
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                hoverColor: Colors.transparent,
+              ),
+              child: RawMaterialButton(
+                onPressed: () {
+                  getByTypes(type);
+                },
+                elevation: 0.0,
+                focusElevation: 0.0,
+                fillColor: ColorStyles.mainGreen,
+                padding: const EdgeInsets.all(15.0),
+                shape: const CircleBorder(),
+                child: Icon(
+                  icon,
+                  size: 30,
+                  color: Colors.white,
+                ),
+              )),
+        ),
+        Text(title, style: const TextStyle(fontSize: 10)),
+      ],
+    );
+  }
+
+  void getByTypes(String type) {
+    if (type == 'SHARE') {
+      _capture();
+    } else if (type == 'HOME') {
+      _goHome();
+    } else {
+      return;
+    }
+  }
+
   void _capture() async {
     print("START CAPTURE");
     var renderObject = globalKey.currentContext?.findRenderObject();
@@ -97,13 +135,10 @@ class _ResultPageState extends State<ResultPage> {
       var boundary = renderObject;
       ui.Image image = await boundary.toImage(pixelRatio: 3.0);
       final directory = (await getApplicationDocumentsDirectory()).path;
-      print(directory);
       ByteData? byteData =
           await image.toByteData(format: ui.ImageByteFormat.png);
       Uint8List? pngBytes = byteData?.buffer.asUint8List();
-      print(pngBytes);
       File imgFile = File('$directory/screenshot.png');
-      print("FINISH CAPTURE ${imgFile}");
       imgFile.writeAsBytes(pngBytes!);
       // var imgFile = File.fromRawPath(pngBytes!);
       if (imgFile != null) {
@@ -130,6 +165,10 @@ class _ResultPageState extends State<ResultPage> {
           text: text,
           sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size);
     }
+  }
+
+  void _goHome() {
+    Get.offAll(() => const MainApp());
   }
 }
 
