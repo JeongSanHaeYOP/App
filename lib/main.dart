@@ -32,6 +32,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
+// 돌아가기용
 class MainApp extends StatelessWidget {
   const MainApp({Key? key}) : super(key: key);
 
