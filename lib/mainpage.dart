@@ -160,6 +160,10 @@ class _MainPageState extends State<MainPage> {
         var result = {'item': itemList, 'price': priceList};
         nextPage(imageFileList, result);
         // Get.to(() => const Loading());
+      } else {
+        setState(() {
+          _isLoading = false;
+        });
       }
     }
   }
@@ -236,6 +240,7 @@ class _MainPageState extends State<MainPage> {
 
   void nextPage(List<File> images, Map result) {
     if (images.isEmpty) {
+      _isLoading = false;
       Get.to(() => const MainPage());
     } else {
       Get.to(() => const SelectPage(),

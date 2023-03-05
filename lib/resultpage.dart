@@ -25,6 +25,7 @@ import 'mainpage.dart';
 ///
 /// N 입력하면 총액에서 나누기
 ///
+/// 돈 시간 ㄱㄱ///
 /// *
 var numFormat = NumberFormat('###,###,###,###');
 
@@ -40,41 +41,53 @@ class _ResultPageState extends State<ResultPage> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        splashColor: Colors.transparent,
-        highlightColor: Colors.transparent,
-      ),
-      home: Scaffold(
-          appBar: AppBar(
-            backgroundColor: ColorStyles.mainGreen,
+    return WillPopScope(
+        onWillPop: () {
+          return _onBackKey('BACK');
+        },
+        child: MaterialApp(
+          theme: ThemeData(
+            primarySwatch: Colors.blue,
+            splashColor: Colors.transparent,
+            highlightColor: Colors.transparent,
           ),
-          body: Center(
-            child: Container(
-                margin: const EdgeInsets.all(30),
-                child: ListView(
-                  children: [
-                    RepaintBoundary(
-                      key: globalKey,
-                      child: const BillCard(),
-                    ),
-                    Center(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          resultButton("SHARE"),
-                          resultButton("HOME"),
-                        ],
-                      ),
+          home: Scaffold(
+              appBar: AppBar(
+                backgroundColor: ColorStyles.mainGreen,
+                leading: IconButton(
+                    onPressed: () async {
+                      if (await _onBackKey('BACK')) {
+                        Get.back();
+                      }
+                    },
+                    color: Colors.white,
+                    icon: const Icon(Icons.arrow_back_ios_new)),
+              ),
+              body: Center(
+                child: Container(
+                    margin: const EdgeInsets.all(30),
+                    child: ListView(
+                      children: [
+                        RepaintBoundary(
+                          key: globalKey,
+                          child: const BillCard(),
+                        ),
+                        Center(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              resultButton("HOME"),
+                              resultButton("SHARE"),
+                            ],
+                          ),
+                        )
+                      ],
                     )
-                  ],
-                )
 
-                //Text("아이템: ${Get.arguments['items']}\n합계 : ${Get.arguments['sum']}"),
-                ),
-          )),
-    );
+                    //Text("아이템: ${Get.arguments['items']}\n합계 : ${Get.arguments['sum']}"),
+                    ),
+              )),
+        ));
   }
 
   Widget resultButton(String type) {
@@ -168,7 +181,89 @@ class _ResultPageState extends State<ResultPage> {
   }
 
   void _goHome() {
-    Get.offAll(() => const MainApp());
+    _onBackKey('HOME');
+    // Get.offAll(() => const MainApp());
+  }
+
+  Future<bool> _onBackKey(String type) async {
+    return await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            titlePadding: const EdgeInsets.fromLTRB(20, 30, 20, 0),
+            actionsPadding: const EdgeInsets.fromLTRB(10, 20, 10, 20),
+            backgroundColor: Colors.white,
+            title: const Text(
+              '지금 돌아가면 현재 내용이 삭제 됩니다. ',
+              style: TextStyle(color: Colors.black, fontSize: 15),
+            ),
+            actions: [
+              Center(
+                child: Column(
+                  children: [
+                    Container(
+                      width: double.infinity,
+                      margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                      child: ElevatedButton(
+                          onPressed: () {
+                            if (type == 'BACK') {
+                              Navigator.pop(context, true);
+                            } else if (type == 'HOME') {
+                              Get.offAll(() => const MainApp());
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            splashFactory: NoSplash.splashFactory,
+                            backgroundColor: ColorStyles.mainGreen,
+                            shadowColor: Colors.transparent,
+                            alignment: Alignment.center,
+                            disabledBackgroundColor: ColorStyles.subGreen,
+                            // padding: const EdgeInsets.fromLTRB(100, 0, 100, 0),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          child: const Text(
+                            "돌아가기",
+                            style: TextStyle(
+                              color: Colors.white,
+                              letterSpacing: 2,
+                            ),
+                          )),
+                    ),
+                    Container(
+                      width: double.infinity,
+                      margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                      child: OutlinedButton(
+                          onPressed: () {
+                            Navigator.pop(context, false);
+                          },
+                          style: OutlinedButton.styleFrom(
+                            splashFactory: NoSplash.splashFactory,
+                            alignment: Alignment.center,
+                            disabledBackgroundColor: ColorStyles.subGreen,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            side: const BorderSide(
+                              width: 1,
+                              color: Colors.grey,
+                            ),
+                          ),
+                          child: const Text(
+                            "취소",
+                            style: TextStyle(
+                              color: Colors.black,
+                              letterSpacing: 2,
+                            ),
+                          )),
+                    )
+                  ],
+                ),
+              )
+            ],
+          );
+        });
   }
 }
 
