@@ -51,6 +51,8 @@ class _SelectPageState extends State<SelectPage> {
       _itemList = item;
       _priceList = price;
     }
+    print(_itemList);
+    print(_priceList);
     return WillPopScope(
         onWillPop: () {
           return _onBackKey();
@@ -234,6 +236,14 @@ class _CalculatePriceState extends State<CalculatePrice> {
   List<String> itemList = _itemList;
   var checkList = List<bool>.filled(_itemList.length, false, growable: true);
 
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -315,8 +325,10 @@ class _CalculatePriceState extends State<CalculatePrice> {
       thickness: 4.0, // 스크롤 너비
       isAlwaysShown: true,
       radius: const Radius.circular(8.0), // 스크롤 라운딩
+      controller: _scrollController,
       child: SingleChildScrollView(
-        reverse: true,
+        controller: _scrollController,
+        // reverse: true,
         padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
         child: Column(
           // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -416,6 +428,7 @@ class _CalculatePriceState extends State<CalculatePrice> {
                 } else {
                   item = itemTextController.text;
                 }
+                print(item);
                 if (priceTextController.text.isEmpty) {
                   Get.snackbar("정산해욥", "금액을 입력해주세요",
                       backgroundColor: Colors.white70,
@@ -431,6 +444,8 @@ class _CalculatePriceState extends State<CalculatePrice> {
                   _itemList.add(item);
                   checkList.add(true);
                 }
+                _scrollController
+                    .jumpTo(_scrollController.position.maxScrollExtent + 50);
               });
             },
             child: const Text(

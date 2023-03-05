@@ -148,9 +148,9 @@ class _MainPageState extends State<MainPage> {
             price = price.replaceAll(',', '');
 
             try {
+              priceList.add(int.parse(price));
               num++;
               itemList.add('항목 $num');
-              priceList.add(int.parse(price));
             } catch (e) {
               print(e);
               continue;
