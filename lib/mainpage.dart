@@ -124,25 +124,27 @@ class _MainPageState extends State<MainPage> {
       }
 
       if (_croppedImgList.isNotEmpty) {
-        // var b = [];
-        // for (int i = 0; i < _croppedImgList.length; i++) {
-        //   var a = await getImageToText(_croppedImgList[i]);
-        //   b.add(a);
-        // }
+        var b = [];
+        List splitData = [];
+        for (int i = 0; i < _croppedImgList.length; i++) {
+          var a = await getImageToText(_croppedImgList[i]);
+          // b.add(a);
+          var tmp = a.split("\r\n");
+          for (var item in tmp) {
+            splitData.add(item);
+          }
+        }
         _isLoading = false;
-        var a =
-            "26주적금(5652)\r\n#자동이체\r\n이지윤\r\n#체크카드\r\n주식회사 카카오\r\n#체크카드\r\n주식회사 써브원\r\n#체크카드\r\n다온푸드\r\n#체크카드\r\n-18,000원\r\n143,015원\r\n150,000원\r\n161,015원\r\n-7,500원\r\n11,015원\r\n-3,900원\r\n18,515원\r\n-6,900원\r\n2기415원\r\n-6,500원\r\n29,315원\r\n";
-        List splitData = a.split("\r\n");
         List<String> itemList = [];
         List<int> priceList = [];
         var num = 0;
         var price = '';
-        for (int i = 0; i < splitData.length; i++) {
-          if (splitData[i].contains('-') ||
-              splitData[i].contains('원') ||
-              splitData[i].contains(',') ||
-              splitData[i].contains('출금')) {
-            price = splitData[i].replaceAll('-', '');
+        for (var item in splitData) {
+          if (item.contains('-') ||
+              item.contains('원') ||
+              item.contains(',') ||
+              item.contains('출금')) {
+            price = item.replaceAll('-', '');
             price = price.replaceAll('원', '');
             price = price.replaceAll('출금', '');
             price = price.replaceAll(',', '');
@@ -185,58 +187,6 @@ class _MainPageState extends State<MainPage> {
 
     return result['ParsedResults'][0]['ParsedText'];
   }
-
-  // Future<void> cropImage() async {
-  //   if (_image != null) {
-  //     var croppedImage = await ImageCropper().cropImage(
-  //       sourcePath: _image!.path,
-  //       compressFormat: ImageCompressFormat.jpg,
-  //       compressQuality: 100,
-  //       uiSettings: [
-  //         AndroidUiSettings(
-  //           toolbarTitle: '',
-  //           toolbarColor: const Color(0xff7FB77E),
-  //           toolbarWidgetColor: Colors.white,
-  //           initAspectRatio: CropAspectRatioPreset.original,
-  //           lockAspectRatio: false),
-  //         IOSUiSettings(
-  //           title: '',
-  //         ),],
-  //     );
-  //     if (croppedImage != null) {
-  //       setState(() {
-  //         _croppedImage = croppedImage;
-  //       });
-  //     }
-  //     final File imageFile = File(croppedImage!.path);
-  //
-  //
-  //     if(_croppedImage != null) {
-  //       // nextPage(imageFile);
-  //     }
-  //   }
-  // }
-
-  // List<XFile>? pickedFiles = [];
-  // List<File> croppedFiles = [];
-  // final ImagePicker _picker = ImagePicker();
-  //
-  // void getImages() async {
-  //   pickedFiles = await _picker.pickMultiImage();
-  //   MultiImageCrop.startCropping(
-  //       context: context,
-  //       aspectRatio: 0.5,
-  //       activeColor: ColorStyles.mainGreen,
-  //       pixelRatio: 2,
-  //       files: List.generate(
-  //           pickedFiles!.length, (index) => File(pickedFiles![index].path)),
-  //       callBack: (List<File> images) {
-  //         setState(() {
-  //           croppedFiles = images;
-  //         });
-  //         nextPage(croppedFiles);
-  //       });
-  // }
 
   void nextPage(List<File> images, Map result) {
     if (images.isEmpty) {
