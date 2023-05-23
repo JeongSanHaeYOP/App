@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:frontend_jshy/resultpage.dart';
 import 'package:frontend_jshy/theme/colors.dart';
+import 'package:frontend_jshy/widgets/commonModal.dart';
 import 'package:frontend_jshy/widgets/subwidgets.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -343,14 +344,7 @@ class _CalculatePriceState extends State<CalculatePrice> {
                   item = itemTextController.text;
                 }
                 if (priceTextController.text.isEmpty) {
-                  Get.snackbar("정산해욥", "금액을 입력해주세요",
-                      backgroundColor: Colors.white70,
-                      icon: const Icon(
-                        Icons.warning_amber_rounded,
-                        color: ColorStyles.mainGreen,
-                        size: 30,
-                      ),
-                      shouldIconPulse: false);
+                  confirmModal(context, "금액을 입력해주세요.");
                 } else {
                   _priceList.add(int.parse(priceTextController.text));
                   sum = sum + int.parse(priceTextController.text);
